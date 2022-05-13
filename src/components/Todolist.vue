@@ -53,9 +53,18 @@ function useTodos() {
 }
 
 let count = ref(1)
+let color = ref('red')
 function add() {
   count.value++
+  color.value = Math.random() > 0.5 ? "blue" : "red"
 }
 let { title, todos, addTodo, clear, active, all, allDone } = useTodos()
 
 </script>
+
+<style scoped>
+h1 {
+  color: v-bind(color)
+}
+
+</style>
