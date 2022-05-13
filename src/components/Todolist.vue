@@ -20,11 +20,16 @@
 </template>
 
 <script setup>
-import { ref,computed } from "vue";
+import { ref,computed, watchEffect } from "vue";
 function useTodos() {
   let title = ref("");
-  let todos = ref([{title:'学习Vue',done:false}])
-
+  // let todos = ref([{title:'学习Vue',done:false}])
+  // 让 todos 和本地存储同步
+  let todos = ref(JSON.parse(localStorage.getItem('todos') || '[]'))
+  // watchEffect，数据变化后执行指定的函数——数据变化后会把数据同步到 localStorage 上
+  watchEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todos.value))
+  })
   function addTodo() {
     todos.value.push({
       title: title.value,
