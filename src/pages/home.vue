@@ -1,7 +1,7 @@
 <template>
     <h1>这是首页</h1>
     <Todolist />
-    <Rate :value="3"></Rate>
+    <Rate :value="3.5"></Rate>
     <Rate :value="4" theme="red"></Rate>
     <Rate :value="1" theme="green"></Rate>
 </template>
