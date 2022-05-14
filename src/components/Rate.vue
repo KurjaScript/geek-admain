@@ -3,14 +3,19 @@
         <div class="rate" @mouseout="mouseOut">
             <span @mouseover="mouseOver(num)" v-for="num in 5" :key="num">☆</span>
             <span class="hollow" :style="fontwidth">
-                <span @mouseover="mouseOver(num)" v-for="num in 5" :key="num">★</span>
+                <span @click="onRate(num)" @mouseover="mouseOver(num)" v-for="num in 5" :key="num">★</span>
             </span>
         </div>
     </div>
 </template>
 
 <script setup>
-import { defineProps, computed, ref } from 'vue';
+import { defineProps, defineEmits, computed, ref } from 'vue';
+
+let emits = defineEmits('update-rate')
+function onRate(num) {
+    emits('update-rate', num)
+}
 // 使用 defineProps 来规范传递数据的格式
 let props = defineProps({
     value: Number,
