@@ -16,5 +16,6 @@ function change(){
 .box{
   background:red;
   height:100px;
+  transition: width 0.5s linear;
 }
 </style>
