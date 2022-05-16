@@ -17,6 +17,9 @@
       <span> {{ active }} / {{ all }} </span>
     </div>
   </div>
+  <div class="info-wrapper" v-if="showModal">
+    <div class="info">请输入任务！</div>  
+  </div>
 </template>
 
 <script setup>
@@ -33,7 +36,15 @@ function useTodos() {
   //   localStorage.setItem('todos', JSON.stringify(todos.value))
   // })
   let todos = useStorage('todos',[])
+  let showModal = ref(false)
   function addTodo() {
+    if(!title.value) { 
+      showModal.value = true 
+      setTimeout(()=>{ 
+        showModal.value = false 
+      },1500) 
+      return 
+    }
     todos.value.push({
       title: title.value,
       done: false
@@ -57,7 +68,7 @@ function useTodos() {
       });
     },
   });
-  return { title, todos, addTodo, clear, active, all, allDone }
+  return { title, todos, addTodo, clear, active, all, allDone, showModal }
 }
 
 let count = ref(1)
@@ -66,7 +77,7 @@ function add() {
   count.value++
   color.value = Math.random() > 0.5 ? "blue" : "red"
 }
-let { title, todos, addTodo, clear, active, all, allDone } = useTodos()
+let { title, todos, addTodo, clear, active, all, allDone, showModal } = useTodos()
 
 </script>
 
@@ -74,5 +85,14 @@ let { title, todos, addTodo, clear, active, all, allDone } = useTodos()
 h1 {
   color: v-bind(color)
 }
-
+.info-wrapper { 
+  position: fixed; 
+  top: 20px; 
+  width:200px;
+}
+.info { 
+  padding: 20px; 
+  color: white; 
+  background: #d88986;
+}
 </style>
