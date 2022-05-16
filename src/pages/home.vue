@@ -9,6 +9,8 @@
     <Rate :value="1" theme="green"></Rate>
     <ChangeWidth />
     <LoopMove />
+    <Animation />
+
 </template>
 
 <script setup>
@@ -17,6 +19,7 @@ import Todolist from '../components/Todolist.vue';
 import Rate from '../components/Rate.vue';
 import ChangeWidth from '../components/ChangeWidth.vue';
 import LoopMove from '../components/LoopMove.vue';
+import Animation from '../components/Animation.vue';
 let score = ref(3.5)
 function update(num) {
     score.value = num

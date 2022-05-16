@@ -1,6 +1,5 @@
 <template>
   <div class="box"></div>
-  <button @click="change">click</button>
 </template>
 
 <style scoped>
