@@ -1,13 +1,10 @@
 <template>
   <div>
-    <h1 @click="add">{{ count }}</h1>
-  </div>
-  <div>
     <input type="text" v-model="title" @keydown.enter="addTodo" />
     <button v-if="active < all" @click="clear">清理</button>
     <ul v-if="todos.length">
       <transition-group name="flip-list" tag="ul">
-        <li v-for="(todo,i) in todos" :key="todo.title">
+        <li v-for="(todo, i) in todos" :key="todo.title">
           <input type="checkbox" v-model="todo.done" />
           <span :class="{ done: todo.done }"> {{ todo.title }}</span>
           <span class="remove-btn" @click="removeTodo($event, i)">❌</span>
@@ -23,8 +20,8 @@
   <transition name="modal">
     <div class="info-wrapper" v-if="showModal">
       <div class="info">请输入任务！</div>
-    </div> </transition
-  >
+    </div>
+  </transition>
 </template>
 
 <script setup>
@@ -57,7 +54,7 @@ function useTodos() {
     title.value = "";
   }
   function removeTodo(e, i) {
-    todos.value.splice(i, 1)
+    todos.value.splice(i, 1);
   }
   function clear() {
     todos.value = todos.value.filter((v) => !v.done);
@@ -78,21 +75,20 @@ function useTodos() {
   });
   return { title, todos, addTodo, removeTodo, clear, active, all, allDone, showModal };
 }
-
-let count = ref(1);
-let color = ref("red");
-function add() {
-  count.value++;
-  color.value = Math.random() > 0.5 ? "blue" : "red";
-}
-let { title, todos, addTodo, removeTodo, clear, active, all, allDone, showModal } =
-  useTodos();
+let {
+  title,
+  todos,
+  addTodo,
+  removeTodo,
+  clear,
+  active,
+  all,
+  allDone,
+  showModal,
+} = useTodos();
 </script>
 
 <style scoped>
-h1 {
-  color: v-bind(color);
-}
 .info-wrapper {
   position: fixed;
   top: 20px;
