@@ -7,9 +7,10 @@
     <button v-if="active < all" @click="clear">清理</button>
     <ul v-if="todos.length">
       <transition-group name="flip-list" tag="ul">
-        <li v-for="todo in todos" :key="todo.title">
+        <li v-for="(todo,i) in todos" :key="todo.title">
           <input type="checkbox" v-model="todo.done" />
           <span :class="{ done: todo.done }"> {{ todo.title }}</span>
+          <span class="remove-btn" @click="removeTodo($event, i)">❌</span>
         </li>
       </transition-group>
     </ul>
@@ -55,6 +56,9 @@ function useTodos() {
     });
     title.value = "";
   }
+  function removeTodo(e, i) {
+    todos.value.splice(i, 1)
+  }
   function clear() {
     todos.value = todos.value.filter((v) => !v.done);
   }
@@ -72,7 +76,7 @@ function useTodos() {
       });
     },
   });
-  return { title, todos, addTodo, clear, active, all, allDone, showModal };
+  return { title, todos, addTodo, removeTodo, clear, active, all, allDone, showModal };
 }
 
 let count = ref(1);
@@ -81,7 +85,7 @@ function add() {
   count.value++;
   color.value = Math.random() > 0.5 ? "blue" : "red";
 }
-let { title, todos, addTodo, clear, active, all, allDone, showModal } =
+let { title, todos, addTodo, removeTodo, clear, active, all, allDone, showModal } =
   useTodos();
 </script>
 
