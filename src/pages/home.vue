@@ -7,12 +7,14 @@
         <img width="14" src="/favicon.ico" alt="">
     </Rate>
     <Rate :value="1" theme="green"></Rate>
+    <ChangeWidth />
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import Todolist from '../components/Todolist.vue';
 import Rate from '../components/Rate.vue';
+import ChangeWidth from '../components/ChangeWidth.vue';
 let score = ref(3.5)
 function update(num) {
     score.value = num
