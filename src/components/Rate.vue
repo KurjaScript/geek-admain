@@ -11,8 +11,9 @@
 
 <script setup>
 import { defineProps, defineEmits, computed, ref } from 'vue';
-
+// difineEmit 定义对外发射的数据
 let emits = defineEmits('update-rate')
+// 点击评分后，向父元素发射评分数据
 function onRate(num) {
     emits('update-rate', num)
 }
