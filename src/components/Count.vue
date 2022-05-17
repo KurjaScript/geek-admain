@@ -1,7 +1,5 @@
 <template>
-  <h1 @click="add" class="count-color">
-    {{ count }}
-  </h1>
+  <h1 @click="add" class="count-color">{{ count }} * 2 = {{ double }}</h1>
 </template>
 
 <script setup>
@@ -11,6 +9,7 @@ import { useStore } from "vuex";
 let store = useStore();
 let color = ref("red");
 let count = computed(() => store.state.count);
+let double = computed(() => store.getters.double);
 
 function add() {
   store.commit("add");
