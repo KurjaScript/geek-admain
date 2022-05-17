@@ -1,5 +1,5 @@
 <template>
-  <h1 @click="add" class="count-color">{{ count }} * 2 = {{ double }}</h1>
+  <h1 @click="asyncAdd" class="count-color">{{ count }} * 2 = {{ double }}</h1>
 </template>
 
 <script setup>
@@ -11,9 +11,12 @@ let color = ref("red");
 let count = computed(() => store.state.count);
 let double = computed(() => store.getters.double);
 
-function add() {
-  store.commit("add");
-  color.value = Math.random() > 0.5 ? "blue" : "red";
+// function add() {
+//   store.commit("add");
+//   color.value = Math.random() > 0.5 ? "blue" : "red";
+// }
+function asyncAdd() {
+  store.dispatch("asyncAdd");
 }
 </script>
 

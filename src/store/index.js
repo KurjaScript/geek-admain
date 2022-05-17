@@ -15,6 +15,13 @@ const store = createStore({
     add (state) {
       state.count++
     }
+  },
+  actions: {
+    asyncAdd({commit}) {
+      setTimeout(() => {
+        commit('add')
+      }, 1000)
+    }
   }
 })
 export default store
