@@ -1,28 +1,51 @@
 <template>
-  <Count></Count>
-  <h1>您的评分是 {{ score }}</h1>
-  <!-- <Todolist /> -->
-  <!-- 使用 update-rate 接收 Rate 组件 emit 的数据 -->
-  <Rate :value="score" @update-rate="update">课程评分</Rate>
-  <Rate :value="4" theme="red">
-    <img width="14" src="/favicon.ico" alt="" />
-  </Rate>
-  <Rate :value="1" theme="green"></Rate>
-  <ChangeWidth />
-  <LoopMove />
-  <Animation />
+  <div>
+    <v-header />
+    <v-sidebar />
+    <div class="content-box">
+      <div class="content">
+        <router-view v-slot="{ Component }">
+          <transition>
+            <keep-alive>
+              <component :is="Component"></component>
+            </keep-alive>
+          </transition>
+        </router-view>
+      </div>
+    </div>
+  </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
-import Count from "../components/Count.vue";
-// import Todolist from "../components/Todolist.vue";
-import Rate from "../components/Rate.vue";
-import ChangeWidth from "../components/ChangeWidth.vue";
-import LoopMove from "../components/LoopMove.vue";
-import Animation from "../components/Animation.vue";
-let score = ref(3.5);
-function update(num) {
-  score.value = num;
-}
+<script>
+import vHeader from "../components/Header.vue";
+import vSidebar from "../components/Sidebar.vue";
+export default {
+  components: {
+    vHeader,
+    vSidebar,
+  },
+};
 </script>
+
+<style scoped>
+.content-box {
+  position: absolute;
+  left: 250px;
+  right: 0;
+  top: 70px;
+  bottom: 0;
+  padding-bottom: 30px;
+  -webkit-transition: left 0.3s ease-in-out;
+  transition: left 0.3s ease-in-out;
+  background-color: #f0f0f0;
+}
+
+.content {
+  width: auto;
+  height: 100%;
+  padding: 10px;
+  /* 当一个块级元素的内容在垂直方向发生溢出时，显示滚动条 */
+  overflow-y: scroll;
+  box-sizing: border-box;
+}
+</style>
