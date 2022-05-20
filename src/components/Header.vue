@@ -1,11 +1,10 @@
 <template>
   <div class="header">
     <!-- 折叠按钮 -->
-    <div class="collapse-btn" @click="collapseChange">
-      <i v-if="!collapse" class="el-icon-s-fold">塌陷</i>
-      <i v-else class="el-icon-s-unfold">不塌陷</i>
+    <div class="collapse-btn" @click="collapseChage">
+      <i v-if="!collapse" class="el-icon-s-fold"></i>
+      <i v-else class="el-icon-s-unfold"></i>
     </div>
-
     <div class="logo">后台管理系统</div>
     <div class="header-right">
       <div class="header-user-con">
@@ -15,7 +14,7 @@
             effect="dark"
             :content="message ? `有${message}条未读消息` : `消息中心`"
             placement="bottom"
-            >*
+          >
             <router-link to="/tabs">
               <i class="el-icon-bell"></i>
             </router-link>
@@ -24,12 +23,12 @@
         </div>
         <!-- 用户头像 -->
         <div class="user-avator">
-          <img src="../assets/img/kurja.jpg" />
+          <img src="../assets/img/img.jpg" />
         </div>
         <!-- 用户名下拉菜单 -->
         <el-dropdown class="user-name" trigger="click" @command="handleCommand">
           <span class="el-dropdown-link">
-            {{ userName }}kurja
+            {{ username }}
             <i class="el-icon-caret-bottom"></i>
           </span>
           <template #dropdown>
@@ -38,7 +37,7 @@
                 <el-dropdown-item>项目仓库</el-dropdown-item>
               </a>
               <el-dropdown-item command="user">个人中心</el-dropdown-item>
-              <el-dropdown-item divided command="loginOut">退出登录</el-dropdown-item>
+              <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -46,32 +45,33 @@
     </div>
   </div>
 </template>
-
 <script>
 import { computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-
 export default {
   setup() {
-    const userName = localStorage.getItem("ms_userName");
-    const store = useStore();
+    const username = localStorage.getItem("ms_username");
     const message = 2;
+
+    const store = useStore();
     const collapse = computed(() => store.state.collapse);
-    const collapseChange = () => {
+    // 侧边栏折叠
+    const collapseChage = () => {
       store.commit("handleCollapse", !collapse.value);
     };
+
     onMounted(() => {
       if (document.body.clientWidth < 1500) {
-        collapseChange;
+        collapseChage();
       }
     });
 
     // 用户名下拉菜单选择事件
     const router = useRouter();
     const handleCommand = (command) => {
-      if (command == "loginOut") {
-        localStorage.removeItem("ms_userName");
+      if (command == "loginout") {
+        localStorage.removeItem("ms_username");
         router.push("/login");
       } else if (command == "user") {
         router.push("/user");
@@ -79,16 +79,15 @@ export default {
     };
 
     return {
-      userName,
+      username,
       message,
       collapse,
-      collapseChange,
+      collapseChage,
       handleCommand,
     };
   },
 };
 </script>
-
 <style scoped>
 .header {
   position: relative;
@@ -103,7 +102,6 @@ export default {
   padding: 0 21px;
   cursor: pointer;
   line-height: 70px;
-  color: #f56c6c;
 }
 .header .logo {
   float: left;
@@ -132,7 +130,6 @@ export default {
   text-align: center;
   border-radius: 15px;
   cursor: pointer;
-  color: #f56c6c;
 }
 .btn-bell-badge {
   position: absolute;
@@ -160,7 +157,7 @@ export default {
   border-radius: 50%;
 }
 .el-dropdown-link {
-  color: red;
+  color: #fff;
   cursor: pointer;
 }
 .el-dropdown-menu__item {
