@@ -171,7 +171,7 @@ export default {
       title: {
         text: "最近一周各品类销售图",
       },
-      xRorate: 25,
+      xRorate: 0,
       labels: ["周一", "周二", "周三", "周四", "周五"],
       datasets: [
         {
