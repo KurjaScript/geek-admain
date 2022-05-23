@@ -27,7 +27,7 @@ const routes = [
         meta: {
           title: '表格'
         },
-        component: () => import ("../views/Dashboard.vue")
+        component: () => import ("../views/Basetable.vue")
       }, {
         path: "/tabs",
         name: "tabs",
