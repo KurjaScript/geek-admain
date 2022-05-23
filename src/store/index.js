@@ -5,6 +5,8 @@ export default createStore({
     return {
       count: 666,
       collapse: false,
+      tagsList: [],
+      
     }
   },
 
