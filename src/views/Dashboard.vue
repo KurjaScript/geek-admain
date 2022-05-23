@@ -1,7 +1,10 @@
 <template>
   <div>
+    <!-- gutter: 栅格间隔 -->
     <el-row :gutter="20">
+      <!-- span: 栅格占据的列数 -->
       <el-col :span="8">
+        <!-- shadow：设置阴影显示时机 -->
         <el-card shadow="hover" class="mgb20" style="height: 252px">
           <div class="user-info">
             <img src="../assets/img/img.jpg" class="user-avator" alt />
@@ -12,11 +15,11 @@
           </div>
           <div class="user-info-list">
             上次登录时间：
-            <span>2019-11-01</span>
+            <span>2022-05-22</span>
           </div>
           <div class="user-info-list">
             上次登录地点：
-            <span>东莞</span>
+            <span>南京</span>
           </div>
         </el-card>
         <el-card shadow="hover" style="height: 252px">
@@ -26,9 +29,12 @@
             </div>
           </template>
           Vue
-          <el-progress :percentage="71.3" color="#42b983"></el-progress>JavaScript
-          <el-progress :percentage="24.1" color="#f1e05a"></el-progress>CSS
-          <el-progress :percentage="13.7"></el-progress>HTML
+          <el-progress :percentage="71.3" color="#42b983"></el-progress>
+          JavaScript
+          <el-progress :percentage="24.1" color="#f1e05a"></el-progress>
+          CSS
+          <el-progress :percentage="13.7"></el-progress>
+          HTML
           <el-progress :percentage="5.9" color="#f56c6c"></el-progress>
         </el-card>
       </el-col>
@@ -75,10 +81,11 @@
               <el-button style="float: right; padding: 3px 0" type="text">添加</el-button>
             </div>
           </template>
-
+          <!-- show-header: 是否显示表头 -->
           <el-table :show-header="false" :data="todoList" style="width: 100%">
             <el-table-column width="40">
               <template #default="scope">
+                <!-- scope.row.status -->
                 <el-checkbox v-model="scope.row.status"></el-checkbox>
               </template>
             </el-table-column>
