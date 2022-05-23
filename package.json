@@ -11,6 +11,7 @@
     "axios": "^0.21.1",
     "element": "^0.1.4",
     "element-plus": "1.0.2-beta.52",
+    "schart.js": "^3.0.4",
     "vue": "^3.1.2",
     "vue-cropperjs": "^5.0.0",
     "vue-i18n": "^9.0.0",
