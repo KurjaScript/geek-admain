@@ -7,7 +7,7 @@
         <!-- shadow：设置阴影显示时机 -->
         <el-card shadow="hover" class="mgb20" style="height: 252px">
           <div class="user-info">
-            <img src="../assets/img/img.jpg" class="user-avator" alt />
+            <img src="../assets/img/yunzhu.jpg" class="user-avator" alt />
             <div class="user-info-cont">
               <div class="user-info-name">{{ name }}</div>
               <div>{{ role }}</div>
