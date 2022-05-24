@@ -72,6 +72,7 @@
     </el-tabs>
   </div>
 </div>
+
 </template>
 
 <script>
@@ -144,4 +145,11 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.message-title {
+    cursor: pointer;
+}
+.handle-row {
+    margin-top: 30px;
+}
+</style>
