@@ -29,6 +29,9 @@ export default createStore({
     closeTagsOther(state, data) {
       state.tagsList = data
     },
+    clearTags(state) {
+      state.tagsList = []
+    }
 
   },
 
