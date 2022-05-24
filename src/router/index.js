@@ -42,6 +42,76 @@ const routes = [
           title: '个人中心'
         },
         component: () => import("../views/User.vue")
+      }, {
+        path: "/form",
+        name: "form",
+        meta: {
+          title: '基本表单'
+        },
+        component: () => import("../views/Baseform.vue")
+      }, {
+        path: "/upload",
+        name: "upload",
+        meta: {
+          title: '文件上传'
+        },
+        component: () => import("../views/Upload.vue")
+      }, {
+        path: "/editor",
+        name: "editor",
+        meta: {
+          title: '富文本编辑器'
+        },
+        component: () => import("../views/Editor.vue")
+      }, {
+        path: "/icon",
+        name: "icon",
+        meta: {
+          title: '自定义图标'
+        },
+        component: () => import("../views/Icon.vue")
+      }, {
+        path: "/charts",
+        name: "charts",
+        meta: {
+          title: '图表'
+        },
+        component: () => import("../views/Basecharts.vue")
+      }, {
+        path: "/i18n",
+        name: "ℹi8n",
+        meta: {
+          title: '国际化'
+        },
+        component: () => import("../views/I18n.vue")
+      }, {
+        path: "/permission",
+        name: "permission",
+        meta: {
+          title: '权限测试'
+        },
+        component: () => import("../views/Permission.vue")
+      }, {
+        path: "/403",
+        name: "403",
+        meta: {
+          title: '没有权限'
+        },
+        component: () => import("../views/403.vue")
+      }, {
+        path: "/404",
+        name: "404",
+        meta: {
+          title: '找不到页面'
+        },
+        component: () => import("../views/404.vue")
+      }, {
+        path: "/donate",
+        name: "donate",
+        meta: {
+          title: '捐助作者'
+        },
+        component: () => import("../views/Donate.vue")
       }
     ]
   }, {
