@@ -128,7 +128,9 @@
 
 <script>
 import Schart from "vue-schart";
-import { reactive } from "vue";
+import { onMounted, reactive } from "vue";
+import { getDashboard } from '../mock/dashboard';
+import axios from "axios";
 export default {
   name: "dashboard",
   components: { Schart },
@@ -136,36 +138,6 @@ export default {
     const name = localStorage.getItem("ms_username");
     const role = name === "admin" ? "超级管理员" : "普通用户";
 
-    const data = reactive([
-      {
-        name: "2018/09/04",
-        value: 1083,
-      },
-      {
-        name: "2018/09/05",
-        value: 941,
-      },
-      {
-        name: "2018/09/06",
-        value: 1139,
-      },
-      {
-        name: "2018/09/07",
-        value: 816,
-      },
-      {
-        name: "2018/09/08",
-        value: 327,
-      },
-      {
-        name: "2018/09/09",
-        value: 228,
-      },
-      {
-        name: "2018/09/10",
-        value: 1065,
-      },
-    ]);
     const options = {
       type: "bar",
       title: {
@@ -236,9 +208,18 @@ export default {
       },
     ]);
 
+    onMounted(() => {
+      getDashboard().then(res => {
+        const { code, data } = res.data
+        if (code === 200) {
+          console.log(res.data)
+        }
+      })
+      
+    }) 
+
     return {
       name,
-      data,
       options,
       options2,
       todoList,

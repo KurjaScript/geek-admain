@@ -1,9 +1,5 @@
-import request from '../utils/request';
+import data from './data'
 
-export const fetchData = query => {
-    return request({
-        url: './table.json',
-        method: 'get',
-        params: query
-    });
-};
+export default {
+    data,
+}
