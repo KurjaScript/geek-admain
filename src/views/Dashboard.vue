@@ -78,11 +78,13 @@
           <template #header>
             <div class="clearfix">
               <span>待办事项</span>
-              <el-button style="float: right; padding: 3px 0" type="text">添加</el-button>
+              <el-button style="float: right; padding: 3px 0" type="text"
+                >添加</el-button
+              >
             </div>
           </template>
           <!-- show-header: 是否显示表头 -->
-          <el-table :show-header="false" :data="todoList" style="width: 100%">
+          <el-table :show-header="false" :data="state.todoList" style="width: 100%">
             <el-table-column width="40">
               <template #default="scope">
                 <!-- scope.row.status -->
@@ -114,12 +116,22 @@
     <el-row :gutter="20">
       <el-col :span="12">
         <el-card shadow="hover">
-          <schart ref="bar" class="schart" canvasId="bar" :options="options"></schart>
+          <schart
+            ref="bar"
+            class="schart"
+            canvasId="bar"
+            :options="state.options1"
+          ></schart>
         </el-card>
       </el-col>
       <el-col :span="12">
         <el-card shadow="hover">
-          <schart ref="line" class="schart" canvasId="line" :options="options2"></schart>
+          <schart
+            ref="line"
+            class="schart"
+            canvasId="line"
+            :options="state.options2"
+          ></schart>
         </el-card>
       </el-col>
     </el-row>
@@ -128,7 +140,8 @@
 
 <script>
 import Schart from "vue-schart";
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, computed } from "vue";
+import { useStore } from "vuex";
 import { getDashboard } from '../mock/dashboard';
 import axios from "axios";
 export default {
@@ -137,82 +150,109 @@ export default {
   setup() {
     const name = localStorage.getItem("ms_username");
     const role = name === "admin" ? "超级管理员" : "普通用户";
-
-    const options = {
-      type: "bar",
-      title: {
-        text: "最近一周各品类销售图",
-      },
-      xRorate: 0,
-      labels: ["周一", "周二", "周三", "周四", "周五"],
-      datasets: [
-        {
-          label: "家电",
-          data: [234, 278, 270, 190, 230],
-        },
-        {
-          label: "百货",
-          data: [164, 178, 190, 135, 160],
-        },
-        {
-          label: "食品",
-          data: [144, 198, 150, 235, 120],
-        },
-      ],
-    };
-    const options2 = {
-      type: "line",
-      title: {
-        text: "最近几个月各品类销售趋势图",
-      },
-      labels: ["6月", "7月", "8月", "9月", "10月"],
-      datasets: [
-        {
-          label: "家电",
-          data: [234, 278, 270, 190, 230],
-        },
-        {
-          label: "百货",
-          data: [164, 178, 150, 135, 160],
-        },
-        {
-          label: "食品",
-          data: [74, 118, 200, 235, 90],
-        },
-      ],
-    };
-    const todoList = reactive([
-      {
-        title: "今天要修复100个bug",
-        status: false,
-      },
-      {
-        title: "今天要修复100个bug",
-        status: false,
-      },
-      {
-        title: "今天要写100行代码加几个bug吧",
-        status: false,
-      },
-      {
-        title: "今天要修复100个bug",
-        status: false,
-      },
-      {
-        title: "今天要修复100个bug",
-        status: true,
-      },
-      {
-        title: "今天要写100行代码加几个bug吧",
-        status: true,
-      },
-    ]);
+    const store = useStore()
+    // const options1 = computed(() => store.state.options)
+    // console.log(store.state.options1)
+    // console.log(options1)
+    // const options2 = computed(() => store.state.options2)
+    // const todoList = computed(() => store.state.todoList)
+    const state = reactive({
+      options1: {},
+      options2: {},
+      todoList: []
+    })
+    // const options1 = reactive({})
+    console.log(state.options1)
+    // const options1 = reactive({
+    //   type: "bar",
+    //   title: {
+    //     text: "最近一周各品类销售图",
+    //   },
+    //   xRorate: 0,
+    //   labels: ["周一", "周二", "周三", "周四", "周五"],
+    //   datasets: [
+    //     {
+    //       label: "家电",
+    //       data: [234, 278, 270, 190, 230],
+    //     },
+    //     {
+    //       label: "百货",
+    //       data: [164, 178, 190, 135, 160],
+    //     },
+    //     {
+    //       label: "食品",
+    //       data: [144, 198, 150, 235, 120],
+    //     },
+    //   ],
+    // });
+    // const options2 = reactive({})
+    console.log(state.options2)
+    // const options2 = {
+    //       type: "line",
+    //       title: {
+    //           text: "最近几个月各品类销售趋势图",
+    //       },
+    //       labels: ["6月", "7月", "8月", "9月", "10月"],
+    //       datasets: [
+    //           {
+    //           label: "家电",
+    //           data: [234, 278, 270, 190, 230],
+    //           },
+    //           {
+    //           label: "百货",
+    //           data: [164, 178, 150, 135, 160],
+    //           },
+    //           {
+    //           label: "食品",
+    //           data: [74, 118, 200, 235, 90],
+    //           },
+    //       ],
+    //   }
+    // const todoList = reactive([])
+    console.log(state.todoList)
+    // const todoList = reactive([
+    //   {
+    //     title: "今天要修复100个bug",
+    //     status: false,
+    //   },
+    //   {
+    //     title: "今天要修复100个bug",
+    //     status: false,
+    //   },
+    //   {
+    //     title: "今天要写100行代码加几个bug吧",
+    //     status: false,
+    //   },
+    //   {
+    //     title: "今天要修复100个bug",
+    //     status: false,
+    //   },
+    //   {
+    //     title: "今天要修复100个bug",
+    //     status: true,
+    //   },
+    //   {
+    //     title: "今天要写100行代码加几个bug吧",
+    //     status: true,
+    //   },
+    // ]);
 
     onMounted(() => {
       getDashboard().then(res => {
         const { code, data } = res.data
         if (code === 200) {
           console.log(res.data)
+
+          state.todoList = res.data.data.todoList
+          console.log(state.todoList)
+
+          // store.state.options = res.data.data.options1
+          state.options1 = res.data.data.options1
+          console.log(state.options1)
+
+          // store.state.options2 = res.data.data.options2
+          state.options2 = res.data.data.options2
+          console.log(state.options2)
         }
       })
       
@@ -220,9 +260,10 @@ export default {
 
     return {
       name,
-      options,
-      options2,
-      todoList,
+      // options1,
+      // options2,
+      // todoList,
+      state,
       role,
     };
   },
