@@ -5,6 +5,9 @@ export default createStore({
       count: 666,
       collapse: false,
       tagsList: [],
+      todoList: [],
+      options1: {},
+      options2: {}
   },
 
   getters: {
