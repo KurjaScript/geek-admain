@@ -104,10 +104,10 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column width="60">
-              <template>
-                <i class="el-icon-edit"></i>
-                <i class="el-icon-delete"></i>
+            <el-table-column width="90" align="center">
+              <template #default="scope">
+                  <el-button type="text" icon="el-icon-delete" style="color:#ff0000"
+                      @click="handleDelete(scope.$index, scope.row)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -152,108 +152,29 @@ export default {
     const name = localStorage.getItem("ms_username");
     const role = name === "admin" ? "超级管理员" : "普通用户";
     const store = useStore()
-    // const options1 = computed(() => store.state.options)
-    // console.log(store.state.options1)
-    // console.log(options1)
-    // const options2 = computed(() => store.state.options2)
-    // const todoList = computed(() => store.state.todoList)
+
     const state = reactive({
       options1: {},
       options2: {},
       todoList: []
     })
-    // const options1 = reactive({})
-    console.log(state.options1)
-    // const options1 = reactive({
-    //   type: "bar",
-    //   title: {
-    //     text: "最近一周各品类销售图",
-    //   },
-    //   xRorate: 0,
-    //   labels: ["周一", "周二", "周三", "周四", "周五"],
-    //   datasets: [
-    //     {
-    //       label: "家电",
-    //       data: [234, 278, 270, 190, 230],
-    //     },
-    //     {
-    //       label: "百货",
-    //       data: [164, 178, 190, 135, 160],
-    //     },
-    //     {
-    //       label: "食品",
-    //       data: [144, 198, 150, 235, 120],
-    //     },
-    //   ],
-    // });
-    // const options2 = reactive({})
-    console.log(state.options2)
-    // const options2 = {
-    //       type: "line",
-    //       title: {
-    //           text: "最近几个月各品类销售趋势图",
-    //       },
-    //       labels: ["6月", "7月", "8月", "9月", "10月"],
-    //       datasets: [
-    //           {
-    //           label: "家电",
-    //           data: [234, 278, 270, 190, 230],
-    //           },
-    //           {
-    //           label: "百货",
-    //           data: [164, 178, 150, 135, 160],
-    //           },
-    //           {
-    //           label: "食品",
-    //           data: [74, 118, 200, 235, 90],
-    //           },
-    //       ],
-    //   }
-    // const todoList = reactive([])
-    console.log(state.todoList)
-    // const todoList = reactive([
-    //   {
-    //     title: "今天要修复100个bug",
-    //     status: false,
-    //   },
-    //   {
-    //     title: "今天要修复100个bug",
-    //     status: false,
-    //   },
-    //   {
-    //     title: "今天要写100行代码加几个bug吧",
-    //     status: false,
-    //   },
-    //   {
-    //     title: "今天要修复100个bug",
-    //     status: false,
-    //   },
-    //   {
-    //     title: "今天要修复100个bug",
-    //     status: true,
-    //   },
-    //   {
-    //     title: "今天要写100行代码加几个bug吧",
-    //     status: true,
-    //   },
-    // ]);
+    // let idx = -1
+    // const handleDelete = ((index, row) => {
+    //   idx = index
+    //   Object.keys(form).forEach((item) => {
+
+    //   })
+    // })
+   
+
 
     onMounted(() => {
       getDashboard().then(res => {
         const { code, data } = res.data
         if (code === 200) {
-          console.log(res.data)
-
-          state.todoList = res.data.data.todoList
-          console.log(state.todoList)
-
-          // store.state.options = res.data.data.options1
-          state.options1 = res.data.data.options1
-          console.log(state.options1)
-
-          // store.state.options2 = res.data.data.options2
-          state.options2 = res.data.data.options2
-          console.log(state.options2)
+          state.todoList = data.todoList
+          state.options1 = data.options1
+          state.options2 = data.options2
         }
       })
       

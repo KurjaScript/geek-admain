@@ -158,51 +158,62 @@ export default [
                 data: {
                     // 待做事项
                     todoList: [
-                        {
+                        {   index: 1,
                             title: "今天要修复100个bug",
                             status: false,
                         },
                         {
+                            index: 2,
                             title: "今天要修复101个bug",
                             status: false,
                         },
                         {
+                            index: 3,
                             title: "今天要写102行代码加几个bug吧",
                             status: true,
                         },
                         {
+                            index: 4,
                             title: "今天要修复103个bug",
                             status: false,
                         },
                         {
+                            index: 5,
                             title: "今天要修复104个bug",
                             status: true,
                         },
                         {
+                            index: 6,
                             title: "今天要写105行代码加几个bug吧",
                             status: true,
                         },
                         {
+                            index: 7,
                             title: "今天要修复100个bug",
                             status: false,
                         },
                         {
+                            index: 8,
                             title: "今天要修复101个bug",
                             status: false,
                         },
                         {
+                            index: 9,
                             title: "今天要写102行代码加几个bug吧",
                             status: true,
                         },
                         {
+                            index: 10,
                             title: "今天要修复103个bug",
                             status: false,
                         },
                         {
+                            index: 11,
                             title: "今天要修复104个bug",
                             status: true,
                         },
                         {
+                            index: 12,
                             title: "今天要写105行代码加几个bug吧",
                             status: true,
                         },
