@@ -45,6 +45,30 @@ export default [
                             title: "今天要写105行代码加几个bug吧",
                             status: true,
                         },
+                        {
+                            title: "今天要修复100个bug",
+                            status: false,
+                        },
+                        {
+                            title: "今天要修复101个bug",
+                            status: false,
+                        },
+                        {
+                            title: "今天要写102行代码加几个bug吧",
+                            status: true,
+                        },
+                        {
+                            title: "今天要修复103个bug",
+                            status: false,
+                        },
+                        {
+                            title: "今天要修复104个bug",
+                            status: true,
+                        },
+                        {
+                            title: "今天要写105行代码加几个bug吧",
+                            status: true,
+                        },
                     ],
                     options1: {
                         type: "bar",

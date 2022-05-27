@@ -23,10 +23,11 @@
           </div>
         </el-card>
         <el-card shadow="hover" style="height: 252px">
-          <template #header>
-            <div class="clearfix">
-              <span>语言详情</span>
-            </div>
+          <template #header >
+              <div style="height:40px; line-height:40px">
+                <span>语言详情</span>
+              </div>
+            
           </template>
           Vue
           <el-progress :percentage="71.3" color="#42b983"></el-progress>
@@ -74,17 +75,17 @@
             </el-card>
           </el-col>
         </el-row>
-        <el-card shadow="hover" style="height: 403px">
-          <template #header>
-            <div class="clearfix">
-              <span>待办事项</span>
-              <el-button style="float: right; padding: 3px 0" type="text"
-                >添加</el-button
-              >
+        <el-card shadow="hover" style="height: 403px;">
+            <div style="display:flex;position:relative;align-items:center;height:30px;z-index:999">
+              <div class="clearfix">
+                <div style="height:40px;line-height:40px">待办事项</div>
+                <el-button style="float: right; padding: 3px" type="text"
+                  >添加</el-button
+                >
+              </div>
             </div>
-          </template>
           <!-- show-header: 是否显示表头 -->
-          <el-table :show-header="false" :data="state.todoList" style="width: 100%">
+          <el-table :show-header="false" :data="state.todoList" style="width: 100%;height:325px;overflow:scroll">
             <el-table-column width="40">
               <template #default="scope">
                 <!-- scope.row.status -->
@@ -378,5 +379,20 @@ export default {
 .schart {
   width: 100%;
   height: 300px;
+}
+.clearfix {
+  display: flex;
+  position: absolute;
+  width:100%;
+  justify-content: space-between;
+  align-content: center;
+  margin-top: -20px;
+  padding: 0;
+  /* overflow-y:auto; */
+  /* z-index: 999; */
+  /* color: red; */
+}
+/deep/ .el-card__header{
+  padding: 0 20px;
 }
 </style>
