@@ -11,14 +11,14 @@
       <div class="handle-box">
         <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
           <el-option key="1" label="广东省" value="广东省"></el-option>
-          <el-option key="2" label="湖南省" value="湖南省"></el-option>
+          <el-option key="2" label="江苏省" value="江苏省"></el-option>
         </el-select>
         <el-input
           v-model="query.name"
           placeholder="用户名"
           class="handle-input mr10"
         ></el-input>
-        <el-button type="primary" icon="el-icon-search" @click="handleSearch"
+        <el-button type="primary" icon="el-icon-search"
           >搜索</el-button
         >
       </div>
@@ -87,7 +87,6 @@
           :current-page="query.pageIndex"
           :page-size="query.pageSize"
           :total="pageTotal"
-          @current-change="handlePageChange"
         ></el-pagination>
       </div>
     </div>
@@ -105,7 +104,7 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="editVisible = false">取 消</el-button>
-          <el-button type="primary" @click="saveEdit">确 定</el-button>
+          <el-button type="primary" @click="saveEdit()" >确 定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -120,6 +119,7 @@ import { fetchData } from "../api/data";
 export default {
   name: "basetable",
   setup() {
+    const editVisible = ref(false)
     const query = reactive({
       address: "",
       name: "",
@@ -128,60 +128,55 @@ export default {
     });
     const tableData = ref([]);
     const pageTotal = ref(0);
+    const form = reactive({
+      name: "",
+      address: "",
+    })
     // 获取表格数据
     const getData = () => {
       fetchData(query).then((res) => {
-        tableData.value = res.list;
-        pageTotal.value = res.pageTotal || 50;
+        tableData.value = res.data.list;
+        console.log(res)
+        pageTotal.value = res.data.pageTotal || 50;
       });
     };
     getData();
 
-    // 查询操作
-    const handleSearch = () => {
-      query.pageIndex = 1;
-      getData();
-    };
-    // 分页导航
-    const handlePageChange = (val) => {
-      query.pageIndex = val;
-      getData();
-    };
+    // 编辑操作
+    let idx = -1
+    const handleEdit = (index, row) => {
+      idx = index
+      Object.keys(form).forEach((item) => {
+        form[item] = row[item]
+      })
+      editVisible.value = true
+    }
+
+    const saveEdit = () => {
+      editVisible.value = false
+      ElMessage.success(`修改第 ${idx + 1} 行成功！`)
+      Object.keys(form).forEach((item) => {
+        tableData.value[idx][item] = form[item]
+      })
+    }
+
 
     // 删除操作
-    const handleDelete = (index) => {
+    const handleDelete = (index, row) => {
       // 二次确认删除
-      ElMessageBox.confirm("确定要删除吗？", "提示", {
-        type: "warning",
+      ElMessageBox.confirm("确认要删除吗？", "提示", {
+        type: "warning"
       })
         .then(() => {
-          ElMessage.success("删除成功");
-          tableData.value.splice(index, 1);
+          ElMessage.success("删除成功！")
+          tableData.value.splice(index, 1)
         })
-        .catch(() => {});
-    };
+        .catch(() => {})
+    }
 
-    // 表格编辑时弹窗和保存
-    const editVisible = ref(false);
-    let form = reactive({
-      name: "",
-      address: "",
-    });
-    let idx = -1;
-    const handleEdit = (index, row) => {
-      idx = index;
-      Object.keys(form).forEach((item) => {
-        form[item] = row[item];
-      });
-      editVisible.value = true;
-    };
-    const saveEdit = () => {
-      editVisible.value = false;
-      ElMessage.success(`修改第 ${idx + 1} 行成功`);
-      Object.keys(form).forEach((item) => {
-        tableData.value[idx][item] = form[item];
-      });
-    };
+
+   
+   
 
     return {
       query,
@@ -189,11 +184,9 @@ export default {
       pageTotal,
       editVisible,
       form,
-      handleSearch,
-      handlePageChange,
       handleDelete,
       handleEdit,
-      saveEdit,
+      saveEdit
     };
   },
 };
