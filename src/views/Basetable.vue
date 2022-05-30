@@ -18,7 +18,7 @@
           placeholder="用户名"
           class="handle-input mr10"
         ></el-input>
-        <el-button type="primary" icon="el-icon-search"
+        <el-button type="primary" icon="el-icon-search" @click="handleSearch(query.name)"
           >搜索</el-button
         >
       </div>
@@ -127,6 +127,7 @@ export default {
       pageSize: 10,
     });
     const tableData = ref([]);
+    const allMsg = ref([])
     const pageTotal = ref(0);
     const form = reactive({
       name: "",
@@ -135,12 +136,24 @@ export default {
     // 获取表格数据
     const getData = () => {
       fetchData(query).then((res) => {
+        allMsg.value = res.data.list
         tableData.value = res.data.list;
         console.log(res)
         pageTotal.value = res.data.pageTotal || 50;
       });
     };
     getData();
+
+    // 搜索功能
+    function handleSearch(queryString) {
+      tableData.value = []
+      allMsg.value.map(item => {
+        if(item.name.indexOf(queryString) !== -1 && item.address.indexOf(query.address) !== -1){
+          tableData.value.push(item)
+        }
+      })
+
+    }
 
     // 编辑操作
     let idx = -1
@@ -186,7 +199,8 @@ export default {
       form,
       handleDelete,
       handleEdit,
-      saveEdit
+      saveEdit,
+      handleSearch
     };
   },
 };
