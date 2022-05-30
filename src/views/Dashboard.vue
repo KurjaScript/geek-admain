@@ -79,7 +79,7 @@
             <div style="display:flex;position:relative;align-items:center;height:30px;z-index:999">
               <div class="clearfix">
                 <div style="height:40px;line-height:40px">待办事项</div>
-                <el-button style="float: right; padding: 3px" type="text"
+                <el-button style="float: right; padding: 3px" type="text" @click="addVisible = true"
                   >添加</el-button
                 >
               </div>
@@ -136,15 +136,29 @@
         </el-card>
       </el-col>
     </el-row>
+    <!-- 添加弹出框 -->
+    <el-dialog title="添加待做事项" v-model="addVisible" width="30%">
+      <el-form label-width="70px">
+        <el-input v-model="addevent"></el-input>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="addVisible = false">取消</el-button>
+          <el-button type="primary" @click="saveEvent">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import Schart from "vue-schart";
-import { onMounted, reactive, computed } from "vue";
+import { onMounted, reactive, computed, ref} from "vue";
 import { useStore } from "vuex";
 import { getDashboard } from '../mock/dashboard';
 import axios from "axios";
+import { ElMessage, ElMessageBox } from 'element-plus';
 export default {
   name: "dashboard",
   components: { Schart },
@@ -152,19 +166,47 @@ export default {
     const name = localStorage.getItem("ms_username");
     const role = name === "admin" ? "超级管理员" : "普通用户";
     const store = useStore()
+    let addVisible = ref(false)
+    let addevent = ref("")
 
     const state = reactive({
       options1: {},
       options2: {},
       todoList: []
     })
-    // let idx = -1
-    // const handleDelete = ((index, row) => {
-    //   idx = index
-    //   Object.keys(form).forEach((item) => {
-
-    //   })
-    // })
+    const handleDelete = ((index, row) => {
+      ElMessageBox.confirm(
+        '确定删除？',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(() => {
+        state.todoList.splice(index,1)
+        ElMessage({
+          type: 'success',
+          message: `成功删除第${index+1}待做事项！`
+        })
+      }).catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '取消删除'
+        })
+      })
+    })
+    const saveEvent = () => {
+      if (addevent.value === "") {
+        ElMessage.error(`您的输入为空，请输入待做事项！`)
+      } else {
+        addVisible.value = false
+        let interEvent = addevent.value
+        state.todoList.push({index: state.todoList.length + 1, title: interEvent, status: false})
+        ElMessage.success(`已成功添加待做事项！`)
+        addevent.value = ""
+        console.log(state.todoList)
+      }
+    }
    
 
 
@@ -182,11 +224,13 @@ export default {
 
     return {
       name,
-      // options1,
-      // options2,
-      // todoList,
+      addVisible,
+      addevent,
       state,
       role,
+      saveEvent,
+      handleDelete
+
     };
   },
 };
