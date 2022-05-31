@@ -1,51 +1,33 @@
 <template>
-  <div class="wrapper">
-    <el-input
-      clearable
-      placeholder="请输入"
-      suffix-icon="el-icon-search"
-      v-model="searchMsg"
-      size="mini"
-      @input="handleSearch(searchMsg)"
-    ></el-input>
-    <el-checkbox-group v-model="checkList">
-      <div v-for="(item, index) in filterMsg" :key="index">
-        <el-checkbox :label="item">{{ item.name }}</el-checkbox>
-      </div>
-    </el-checkbox-group>
-  </div>
+  <div v-for="(item,index) in users" :key="item">{{ index + 1 }}-{{ item }}</div>
 </template>
+
 <script>
-export default {
-  data() {
-    return {
-      searchMsg: "",
-      checkList: [],
-      filterMsg: []
-    };
-  },
-  mounted() {
-    this.allMsg = [
-      { name: "myhua", id: 1 },
-      { name: "mp3", id: 2 },
-      { name: "hello", id: 3 },
-      { name: "world", id: 4 },
-      { name: "warm weather", id: 5 },
-      { name: "m3", id: 6 },
-      { name: "hahaha", id: 7 }
-    ];
-    this.filterMsg = this.allMsg;
-  },
-  methods: {
-    // 搜索方法
-    handleSearch(queryString) {
-      this.filterMsg = [];
-      this.allMsg.map(item => {
-        if (item.name.indexOf(queryString) !== -1) {
-          this.filterMsg.push(item);
-        }
-      });
-    }
+import { onMounted, ref } from "vue";
+import { getUsersList, postNewUser, putUpdateUser } from '../api/restful'
+// import axios from "axios"
+// import { getUsers } from '../mock/users'
+// import '../mock/index.js'
+export default({
+  setup() {
+    let users = ref([])
+    onMounted(() => {
+      getUsersList().then(res => {
+        users.value = res.data.data
+        console.log('users', users)
+      }).catch(err => {
+        console.log(err)
+      })
+
+      postNewUser().then(res => {
+        console.log(res.data)
+      })
+
+      putUpdateUser().then(res => {
+        console.log(res)
+      })
+    })
+    return { users }
   }
-};
+})
 </script>

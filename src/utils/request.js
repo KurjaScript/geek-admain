@@ -7,6 +7,7 @@ const service = axios.create({
     // baseURL: 'https://www.easy-mock.com/mock/592501a391470c0ac1fab128',
     // baseURL: process.env.VUE_APP_BASE_API,
     baseURL: 'http://localhost:3000',
+    // baseURL: 'http://public-api-v1.aspirantzhang.com',
     timeout: 5000
 });
 
