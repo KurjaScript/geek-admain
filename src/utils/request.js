@@ -6,9 +6,9 @@ const service = axios.create({
     // easy-mock服务挂了，暂时不使用了
     // baseURL: 'https://www.easy-mock.com/mock/592501a391470c0ac1fab128',
     // baseURL: process.env.VUE_APP_BASE_API,
-    baseURL: 'http://localhost:3000',
-    // baseURL: 'http://public-api-v1.aspirantzhang.com',
-    timeout: 5000
+    // baseURL: 'http://localhost:3000',
+    baseURL: 'http://public-api-v1.aspirantzhang.com',
+    timeout: 50000
 });
 
 service.interceptors.request.use(

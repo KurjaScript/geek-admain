@@ -8,20 +8,26 @@
       </el-breadcrumb>
     </div>
     <div class="container">
-      <div class="handle-box">
-        <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-          <el-option key="1" label="广东省" value="广东省"></el-option>
-          <el-option key="2" label="江苏省" value="江苏省"></el-option>
-        </el-select>
-        <el-input
-          v-model="query.name"
-          placeholder="用户名"
-          class="handle-input mr10"
-        ></el-input>
-        <el-button type="primary" icon="el-icon-search" @click="handleSearch(query.name)"
-          >搜索</el-button
-        >
+      <div class="header-box">
+        <div class="handle-box">
+          <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
+            <el-option key="1" label="广东省" value="广东省"></el-option>
+            <el-option key="2" label="江苏省" value="江苏省"></el-option>
+          </el-select>
+          <el-input
+            v-model="query.name"
+            placeholder="用户名"
+            class="handle-input mr10"
+          ></el-input>
+          <el-button type="primary" icon="el-icon-search" @click="handleSearch(query.name)"
+            >搜索</el-button
+          >
+        </div>
+        <el-button type="primary" style="margin-bottom:20px"  @click="addVisible = true"
+            >新增</el-button
+          >
       </div>
+      
 
       <el-table
         :data="tableData"
@@ -33,7 +39,11 @@
         <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
         <el-table-column prop="name" label="用户名"></el-table-column>
         <el-table-column label="账户余额">
-          <template #default="scope">￥{{ scope.row.money }}</template>
+          <!-- <template #default="scope" v-if="!scope.row.money">暂无数据</template> -->
+          <template #default="scope">
+            <div v-if="scope.row.money">￥{{ scope.row.money }}</div>
+            <div v-else>暂无余额</div>
+          </template>
         </el-table-column>
         <el-table-column label="头像(查看大图)" align="center">
           <template #default="scope">
@@ -108,18 +118,49 @@
         </span>
       </template>
     </el-dialog>
+
+    <!-- 新增弹出框 -->
+    <el-dialog title="新增用户" v-model="addVisible" width="30%">
+      <el-form label-width="70px">
+        <el-form-item label="用户名">
+          <el-input v-model="newForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="账户余额">
+          <el-input v-model="newForm.money"></el-input>
+        </el-form-item>
+        <el-form-item label="地址">
+          <el-input v-model="newForm.address"></el-input>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-input v-model="newForm.state"></el-input>
+        </el-form-item>
+        <el-form-item label="注册时间">
+          <el-input v-model="newForm.date"></el-input>
+        </el-form-item>
+      </el-form>
+      
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="addVisible = false">取消</el-button>
+          <el-button type="primary" @click="saveNewForm">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { ref, reactive } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { fetchData } from "../api/data";
+// import { fetchData } from "../api/data";
+import { getBasetable, postBasetable } from "../mock/basetable.js"
+import axios from 'axios';
 
 export default {
   name: "basetable",
   setup() {
     const editVisible = ref(false)
+    const addVisible = ref(false)
     const query = reactive({
       address: "",
       name: "",
@@ -133,9 +174,18 @@ export default {
       name: "",
       address: "",
     })
+  
+    const newForm = reactive({
+      name: "",
+      money: "",
+      address: "",
+      state: "",
+      date: "",
+      thumb:""
+    })
     // 获取表格数据
     const getData = () => {
-      fetchData(query).then((res) => {
+      getBasetable({}).then((res) => {
         allMsg.value = res.data.list
         tableData.value = res.data.list;
         console.log(res)
@@ -152,7 +202,32 @@ export default {
           tableData.value.push(item)
         }
       })
+    }
 
+    // 新增功能
+    const saveNewForm = () => {
+      let newItem = {
+        id: tableData.value.length + 1,
+        name: newForm.name,
+        money: newForm.money,
+        address: newForm.address,
+        state: newForm.state,
+        date: newForm.date,
+        thumb: "https://lin-xin.gitee.io/images/post/node3.png"
+      }
+      tableData.value.push(newItem)
+      addVisible.value = false
+      // axios.post('http://localhost:3000/api/getbasetable', tableData.value).then(res => {
+      //   console.log(res)
+      // })
+      postBasetable(newItem).then(res => {
+        console.log(res)
+        // console.log(allMsg.value = res.data.obj.list)
+        // tableData.value = res.data.obj.list;
+        // console.log(res)
+        // pageTotal.value = res.data.obj.pageTotal || 50;
+
+      })
     }
 
     // 编辑操作
@@ -196,10 +271,13 @@ export default {
       tableData,
       pageTotal,
       editVisible,
+      addVisible,
+      newForm,
       form,
       handleDelete,
       handleEdit,
       saveEdit,
+      saveNewForm,
       handleSearch
     };
   },
@@ -207,6 +285,10 @@ export default {
 </script>
 
 <style scoped>
+.header-box {
+  display: flex;
+  justify-content: space-between;
+}
 .handle-box {
   margin-bottom: 20px;
 }
