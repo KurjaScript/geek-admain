@@ -291,25 +291,38 @@ const rules = reactive({
 
     // 转换日期格式
     const formatDate = (val1, val2) => {
-      debugger
-      if (!val1 && !val2) return "暂无"
-      let value1 = new Date(val1)
-      let value2 = new Date(val2)
+      // debugger
       let seperator1 = "-"
       let seperator2 = ":"
-      let month = value1.getMonth() + 1
-      let day = value1.getDate()
-      let hour, minute, second
-      if (!val2) {
-        hour = 0
-        minute = 0
-        second = 0
-      }else {
+      
+      let value1, value2, month, day, hour, minute, second
+      if (!val1 && !val2) { 
+        return "暂无"
+      }
+      else if (!val1) {
+        value1 = new Date(val2)
+        value2 = new Date(val2)
+        month = value1.getMonth() + 1
+        day = value1.getDay()
         hour = value2.getHours()
         minute = value2.getMinutes()
         second = value2.getSeconds()
       }
-     
+      else if (!val2) {
+        value1 = new Date(val1)
+        month = value1.getMonth() + 1
+        day = value1.getDay()
+        hour = 0
+        minute = 0
+        second = 0
+      }else {
+        month = value1.getMonth() + 1
+        day = value1.getDay()
+        hour = value2.getHours()
+        minute = value2.getMinutes()
+        second = value2.getSeconds()
+      }
+
       if (month >=1 && month <= 9){
         month = "0" + month
       }
