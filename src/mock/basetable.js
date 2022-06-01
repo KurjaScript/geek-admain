@@ -13,6 +13,6 @@ export function postBasetable(data){
     return request({
         method: 'POST',
         url: '/api/postbasetable',
-        data: {obj: data},
+        data: { obj: data },
     })
 }

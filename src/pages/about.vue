@@ -11,8 +11,8 @@
       <div class="header-box">
         <div class="handle-box">
           <el-select v-model="query.id" placeholder="ID" class="handle-select mr10">
-            <el-option key="1" label="12804" value="12804"></el-option>
-            <el-option key="2" label="12807" value="12807"></el-option>
+            <el-option key="1" label="1281" value="1281"></el-option>
+            <el-option key="2" label="1282" value="1282"></el-option>
           </el-select>
           <el-input
             v-model="query.name"
@@ -37,15 +37,15 @@
         header-cell-class-name="table-header"
       >
         <el-table-column prop="id" label="ID" width="70" align="center"></el-table-column>
-        <el-table-column prop="name" label="用户名"></el-table-column>
-        <el-table-column prop="email" label="邮箱">
+        <el-table-column prop="name" label="用户名" align="center"></el-table-column>
+        <el-table-column prop="email" label="邮箱" align="center">
           <template #default="scope">
-            <div v-if="scope.row.email">￥{{ scope.row.email }}</div>
+            <div v-if="scope.row.email">{{ scope.row.email }}</div>
             <div v-else>暂无</div>
           </template>
         </el-table-column>
         <el-table-column prop="create_time" label="创建时间" align="center"></el-table-column>
-        <el-table-column prop="update_time" label="更新时间"></el-table-column>
+        <el-table-column prop="update_time" label="更新时间" align="center"></el-table-column>
         <el-table-column prop="status" label="状态" align="center">
           <template #default="scope">
             <el-tag
@@ -111,22 +111,63 @@
 
     <!-- 新增弹出框 -->
     <el-dialog title="新增用户" v-model="addVisible" width="30%">
-      <el-form label-width="70px" >
-        <el-form-item label="用户名">
-          <el-input v-model="newForm.name"></el-input>
+    
+      <el-form
+        ref="ruleForms"
+        :model="ruleForm"
+        :rules="rules"
+        label-width="120px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="用户名" prop="name">
+          <el-col :span="11">
+            <el-input style="width:150px" v-model="ruleForm.name" />
+          </el-col>
         </el-form-item>
-        <el-form-item label="邮箱">
-          <el-input v-model="newForm.email"></el-input>
+         <el-form-item label="邮箱" prop="email">
+          <el-col :span="11">
+            <el-input style="width:150px" v-model="ruleForm.email" />
+          </el-col>
         </el-form-item>
-        <el-form-item label="创建日期">
-          <el-input v-model="newForm.create_time"></el-input>
+        <el-form-item label="创建时间">
+          <el-col :span="11" >
+            <el-form-item prop="create_date">
+              <el-date-picker
+                v-model="ruleForm.create_date"
+                type="date"
+                placeholder="选择日期"
+                style="width: 150px"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col class="line" :span="2">-</el-col>
+          <el-col :span="11">
+            <el-form-item prop="create_time">
+              <el-time-picker placeholder="选择时间" v-model="ruleForm.create_time" style="width: 100%;"></el-time-picker>
+            </el-form-item>
+          </el-col>
         </el-form-item>
-        <el-form-item label="更新日期">
-          <el-input v-model="newForm.update_time"></el-input>
+        <el-form-item label="更新时间" >
+          <el-col :span="11">
+            <el-form-item prop="update_date">
+              <el-date-picker
+                v-model="ruleForm.update_date"
+                type="date"
+                placeholder="选择日期"
+                style="width: 150px"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col class="line" :span="2">-</el-col>
+          <el-col :span="11">
+            <el-form-item prop="update_time">
+              <el-time-picker placeholder="选择时间" v-model="ruleForm.update_time" style="width: 100%;"></el-time-picker>
+            </el-form-item>
+          </el-col>
         </el-form-item>
-        <el-form-item label="状态">
-          <el-input v-model="newForm.date"></el-input>
-        </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-switch v-model="ruleForm.status" />
+        </el-form-item> 
       </el-form>
       
       <template #footer>
@@ -141,7 +182,9 @@
 <script>
 import { ref, reactive } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { getUsersList, postNewUser } from '../api/restful'
+import { getUsersList, postNewUser } from '../api/restful';
+
+
 // import { fetchData } from "../api/data";
 import { getBasetable, postBasetable } from "../mock/basetable.js"
 import axios from 'axios';
@@ -178,11 +221,63 @@ export default {
       getUsersList({}).then((res) => {
         allMsg.value = res.data.data
         tableData.value = res.data.data;
+        allMsg.value.create_time = formatDate(allMsg.value.create_time)
+        tableData.value.create_time = formatDate(tableData.value.create_time)
         console.log(res.data.data)
-        pageTotal.value = res.data.pageTotal || 50;
+
+        pageTotal.value = res.data.pageTotal || tableData.value.length;
       });
     };
     getData();
+
+    const formSize = ref('default')
+const ruleForm = reactive({
+  name: '',
+  email: '',
+  create_date: '',
+  create_time: '',
+  update_date: '',
+  update_time: '',
+  status: false,
+})
+
+const rules = reactive({
+  name: [
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+    { min: 3, message: '用户名长度不能小于 3', trigger: 'blur' },
+  ],
+  email: [
+    {
+      required: true,
+      message: '请输入邮箱',
+      trigger: 'change',
+    },
+  ],
+  create_time: [
+    {
+      type: 'date',
+      required: true,
+      message: '请选择创建日期',
+      trigger: 'change',
+    },
+  ],
+  update_time: [
+    {
+      type: 'date',
+      required: false,
+      message: '请选择更新日期',
+      trigger: 'change',
+    },
+  ],
+  status: [
+    {
+      required: false,
+      message: '请选择状态',
+      trigger: 'change',
+    }
+  ]
+
+})
 
     // 搜索功能
     function handleSearch(queryString) {
@@ -194,17 +289,58 @@ export default {
       })
     }
 
+    // 转换日期格式
+    const formatDate = (val1, val2) => {
+      debugger
+      if (!val1 && !val2) return "暂无"
+      let value1 = new Date(val1)
+      let value2 = new Date(val2)
+      let seperator1 = "-"
+      let seperator2 = ":"
+      let month = value1.getMonth() + 1
+      let day = value1.getDate()
+      let hour, minute, second
+      if (!val2) {
+        hour = 0
+        minute = 0
+        second = 0
+      }else {
+        hour = value2.getHours()
+        minute = value2.getMinutes()
+        second = value2.getSeconds()
+      }
+     
+      if (month >=1 && month <= 9){
+        month = "0" + month
+      }
+      if (day >=1 && day <= 9) {
+        day = "0" + day
+      }
+      if (hour >= 0 && hour <= 9){
+        hour = "0" + hour
+      }
+      if (minute >= 0 && minute <= 9) {
+        minute = "0" + minute
+      }
+      if (second >= 0 && second <= 9) {
+        second = "0" + second
+      }
+      let formatDate = value1.getFullYear() + seperator1 + month + seperator1 + day + " " + hour + seperator2 + minute + seperator2 + second;
+      return formatDate
+    }
+
     // 新增功能
     const saveNewForm = () => {
-      let newItem = {
+      console.log(new Date(ruleForm.create_date+ruleForm.create_time))
+      let newItem = [{
         id: tableData.value.length + 1,
-        name: newForm.name,
-        email: newForm.email,
-        create_time: newForm.create_time,
-        update_time: newForm.update_time,
-        status: newForm.status,
-      }
-      tableData.value.push(newItem)
+        name: ruleForm.name,
+        email: ruleForm.email,
+        create_time: formatDate(ruleForm.create_date, ruleForm.create_time),
+        update_time: formatDate(ruleForm.update_date, ruleForm.update_time),
+        status: ruleForm.status,
+      }]
+      tableData.value = newItem.concat(tableData.value)
       addVisible.value = false
       // axios.post('http://localhost:3000/api/getbasetable', tableData.value).then(res => {
       //   console.log(res)
@@ -217,6 +353,8 @@ export default {
         // pageTotal.value = res.data.obj.pageTotal || 50;
 
       })
+
+      
     }
 
     // 编辑操作
@@ -254,13 +392,15 @@ export default {
 
    
    
-
+console.log(ruleForm);
     return {
       query,
       tableData,
       pageTotal,
       editVisible,
       addVisible,
+      rules,
+      ruleForm,
       newForm,
       form,
       handleDelete,
@@ -292,7 +432,9 @@ export default {
 }
 .table {
   width: 100%;
+  height: 600px;
   font-size: 14px;
+  overflow: scroll;
 }
 .red {
   color: #ff0000;
