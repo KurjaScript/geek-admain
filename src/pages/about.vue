@@ -50,13 +50,11 @@
           <template #default="scope">
             <el-tag
               :type="
-                scope.row.status === 1
+                scope.row.status === 1 || scope.row.status === true
                   ? 'success'
-                  : scope.row.state === 0
-                  ? 'danger'
-                  : ''
+                  : 'danger'
               "
-              >{{ scope.row.status === 1 ? '成功' : '失败'  }}</el-tag
+              >{{ scope.row.status === 1 || scope.row.status === true ? '成功' : '失败'  }}</el-tag
             >
           </template>
         </el-table-column>
@@ -110,7 +108,7 @@
     </el-dialog>
 
     <!-- 新增弹出框 -->
-    <el-dialog title="新增用户" v-model="addVisible" width="30%">
+    <el-dialog title="新增用户" v-model="addVisible" width="45%">
     
       <el-form
         ref="ruleForms"
@@ -200,6 +198,7 @@ export default {
       pageIndex: 1,
       pageSize: 10,
     });
+    const ruleForms = ref(null)
     const tableData = ref([]);
     const allMsg = ref([])
     const pageTotal = ref(0);
@@ -253,11 +252,27 @@ const rules = reactive({
       trigger: 'change',
     },
   ],
+  create_date: [
+    {
+      type: 'date',
+      required: false,
+      message: '请选择创建日期',
+      trigger: 'change',
+    },
+  ],
   create_time: [
     {
       type: 'date',
-      required: true,
-      message: '请选择创建日期',
+      required: false,
+      message: '请选择创建时间',
+      trigger: 'change',
+    },
+  ],
+  update_date: [
+    {
+      type: 'date',
+      required: false,
+      message: '请选择更新日期',
       trigger: 'change',
     },
   ],
@@ -265,7 +280,7 @@ const rules = reactive({
     {
       type: 'date',
       required: false,
-      message: '请选择更新日期',
+      message: '请选择更新时间',
       trigger: 'change',
     },
   ],
@@ -318,7 +333,7 @@ const rules = reactive({
       }else {
         value1 = new Date(val1)
         value2 = new Date(val2)
-        month = value1.getDay() + 1
+        month = value1.getMonth() + 1
         day = value1.getDay()
         hour = value2.getHours()
         minute = value2.getMinutes()
@@ -345,8 +360,8 @@ const rules = reactive({
     }
 
     // 新增功能
-    const saveNewForm = () => {
-      console.log(new Date(ruleForm.create_date+ruleForm.create_time))
+    const saveNewForm = (formName) => {
+      debugger
       let newItem = [{
         id: tableData.value.length + 1,
         name: ruleForm.name,
@@ -356,20 +371,26 @@ const rules = reactive({
         status: ruleForm.status,
       }]
       tableData.value = newItem.concat(tableData.value)
-      addVisible.value = false
-      // axios.post('http://localhost:3000/api/getbasetable', tableData.value).then(res => {
-      //   console.log(res)
-      // })
-      postNewUser(newItem).then(res => {
-        console.log(res)
-        // console.log(allMsg.value = res.data.obj.list)
-        // tableData.value = res.data.obj.list;
-        // console.log(res)
-        // pageTotal.value = res.data.obj.pageTotal || 50;
-
+      ruleForms.value.validate((valid) => {
+        if (valid) {
+          addVisible.value = false
+          ruleForm = reactive({
+            name: '',
+            email: '',
+            create_date: '',
+            create_time: '',
+            update_date: '',
+            update_time: '',
+            status: false,
+          })
+          postNewUser(newItem).then(res => {  
+            console.log(res)
+          })
+        }else {
+          console.log('error submit!!');
+          return false;
+        }
       })
-
-      
     }
 
     // 编辑操作
@@ -416,6 +437,7 @@ console.log(ruleForm);
       addVisible,
       rules,
       ruleForm,
+      ruleForms,
       newForm,
       form,
       handleDelete,
