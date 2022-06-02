@@ -249,7 +249,7 @@ const rules = reactive({
     {
       required: true,
       message: '请输入邮箱',
-      trigger: 'change',
+      trigger: 'blur',
     },
   ],
   create_date: [
@@ -359,9 +359,16 @@ const rules = reactive({
       return formatDate
     }
 
+    // 清空 reactive 对象
+    const clear = (obj) => {
+      Object.keys(obj).map(key => {
+        obj[key] = null
+      })
+    }
+
     // 新增功能
     const saveNewForm = (formName) => {
-      debugger
+      // debugger
       let newItem = [{
         id: tableData.value.length + 1,
         name: ruleForm.name,
@@ -374,19 +381,12 @@ const rules = reactive({
       ruleForms.value.validate((valid) => {
         if (valid) {
           addVisible.value = false
-          ruleForm = reactive({
-            name: '',
-            email: '',
-            create_date: '',
-            create_time: '',
-            update_date: '',
-            update_time: '',
-            status: false,
-          })
+          clear(ruleForm)
           postNewUser(newItem).then(res => {  
             console.log(res)
           })
         }else {
+          clear(ruleForm)
           console.log('error submit!!');
           return false;
         }
