@@ -23,7 +23,7 @@
             >搜索</el-button
           >
         </div>
-        <el-button type="primary" style="margin-bottom:20px"  @click="addVisible = true"
+        <el-button type="primary" style="margin-bottom:20px"  @click="addForm"
             >新增</el-button
           >
       </div>
@@ -99,7 +99,7 @@
         <el-form-item label="用户名">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="地址">
+        <el-form-item label="邮箱">
           <el-input v-model="form.address"></el-input>
         </el-form-item>
       </el-form>
@@ -112,7 +112,7 @@
     </el-dialog>
 
     <!-- 新增弹出框 -->
-    <el-dialog title="新增用户" v-model="addVisible" width="45%">
+    <el-dialog :title=" titleValue === true ? '编辑用户' : '新增用户'" v-model="addVisible" width="45%">
     
       <el-form
         ref="ruleForms"
@@ -194,6 +194,7 @@ import { getUsersList, postNewUser } from '../api/restful';
 export default {
   name: "basetable",
   setup() {
+    const titleValue = ref(false)
     const editVisible = ref(false)
     const addVisible = ref(false)
     const query = reactive({
@@ -208,9 +209,13 @@ export default {
     const allMsg = ref([])
     const miniTable = ref([])
     const form = reactive({
-      name: "",
-      email: "",
-      status: "",
+      name: '',
+      email: '',
+      create_date: '',
+      create_time: '',
+      update_date: '',
+      update_time: '',
+      status: false,
     })
   
     const newForm = reactive({
@@ -382,7 +387,14 @@ const rules = reactive({
       })
     }
 
-    // 新增功能
+    // 点击新增按钮
+    const addForm = () => {
+      titleValue.value = false
+      addVisible.value = true
+      clear(ruleForm)
+    }
+
+    // 保存新增内容
     const saveNewForm = (formName) => {
       // debugger
       let newItem = [{
@@ -400,7 +412,6 @@ const rules = reactive({
           addVisible.value = false
           query.pageTotal = tableData.value.length
           miniTable.value = tableData.value.slice((query.pageIndex - 1) * query.pageSize, query.pageIndex * query.pageSize) 
-          clear(ruleForm)
           postNewUser(newItem).then(res => {  
             console.log(res)
           })
@@ -412,18 +423,32 @@ const rules = reactive({
       })
     }
 
+    // 恢复 reactive 对象
+    // const recover = (obj) => {
+    //   Object().keys().map(key => {
+    //     obj[key] = 
+    //   })
+    // } 
+
     // 编辑操作
     let idx = -1
     const handleEdit = (index, row) => {
       idx = index
-      Object.keys(form).forEach((item) => {
-        form[item] = row[item]
+      titleValue.value = true
+      addVisible.value = true
+      Object.keys(ruleForm).map(key => {
+        ruleForm[key] = miniTable.value[idx][key]
       })
-      editVisible.value = true
+
+      Object.keys(miniTable).forEach(key => {
+        miniTable.value[idx][key] = row[key]
+      })
+      
+      
     }
 
     const saveEdit = () => {
-      editVisible.value = false
+      addVisible.value = false
       ElMessage.success(`修改第 ${idx + 1} 行成功！`)
       Object.keys(form).forEach((item) => {
         miniTable.value[idx][item] = form[item]
@@ -445,7 +470,7 @@ const rules = reactive({
     }
 
     const togglePagination = (page) => {
-      debugger
+      // debugger
       query.pageIndex = page
       let beginNum = (page - 1) * query.pageSize
       let endNum = query.pageSize * page > query.pageTotal ? query.pageTotal : query.pageSize * page
@@ -455,6 +480,7 @@ const rules = reactive({
       }
     }
     return {
+      titleValue,
       query,
       tableData,
       miniTable,
@@ -464,7 +490,7 @@ const rules = reactive({
       ruleForm,
       ruleForms,
       newForm,
-      form,
+      addForm,
       handleDelete,
       handleEdit,
       saveEdit,
@@ -495,7 +521,7 @@ const rules = reactive({
 }
 .table {
   width: 100%;
-  height: 700px;
+  height: 750px;
   font-size: 14px;
   /* overflow: scroll; */
 }
