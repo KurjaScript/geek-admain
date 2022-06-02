@@ -46,7 +46,7 @@ export default [
             }
             try {
                 let object = payload.body.obj
-                if(object === {}) return obj
+                if(!object) return obj
                 else {
                     obj.list.push(object)
                     return obj

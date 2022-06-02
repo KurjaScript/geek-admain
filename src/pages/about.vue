@@ -30,7 +30,7 @@
       
 
       <el-table
-        :data="tableData"
+        :data="miniTable"
         border
         class="table"
         ref="multipleTable"
@@ -82,9 +82,13 @@
         <el-pagination
           background
           layout="total, prev, pager, next"
-          :current-page="query.pageIndex"
           :page-size="query.pageSize"
-          :total="pageTotal"
+          :pager-count="5"
+          :current-page="query.pageIndex"
+          :total="query.pageTotal"
+          @prev-click="togglePagination"
+          @next-click="togglePagination"
+          @current-change="togglePagination"
         ></el-pagination>
       </div>
     </div>
@@ -184,8 +188,8 @@ import { getUsersList, postNewUser } from '../api/restful';
 
 
 // import { fetchData } from "../api/data";
-import { getBasetable, postBasetable } from "../mock/basetable.js"
-import axios from 'axios';
+// import { getBasetable, postBasetable } from "../mock/basetable.js"
+// import axios from 'axios';
 
 export default {
   name: "basetable",
@@ -195,13 +199,14 @@ export default {
     const query = reactive({
       id: "",
       name: "",
-      pageIndex: 1,
-      pageSize: 10,
+      pageIndex: 1, // 当前页
+      pageSize: 10, // 每页的条页个数
+      pageTotal:10, // 总条目数
     });
     const ruleForms = ref(null)
     const tableData = ref([]);
     const allMsg = ref([])
-    const pageTotal = ref(0);
+    const miniTable = ref([])
     const form = reactive({
       name: "",
       email: "",
@@ -222,12 +227,24 @@ export default {
         tableData.value = res.data.data;
         allMsg.value.create_time = formatDate(allMsg.value.create_time)
         tableData.value.create_time = formatDate(tableData.value.create_time)
-        console.log(res.data.data)
-
-        pageTotal.value = res.data.pageTotal || tableData.value.length;
+        console.log(res.data)
+        query.pageTotal = tableData.value.length
+        
+          if(query.pageSize > tableData.value.length) {
+            miniTable.value = tableData.value
+          } else {
+              for( let beginNum = (query.pageIndex - 1) * query.pageSize; beginNum < query.pageIndex * query.pageSize; beginNum++){
+                miniTable.value.push(tableData.value[beginNum])
+                // miniTable.value = (tableData.value[beginNum]).concat(miniTable.value)
+                // tableData.value = newItem.concat(tableData.value)
+                // allMsg.value = newItem.concat(allMsg.value)
+              }
+          }
+        
       });
     };
     getData();
+    console.log(miniTable.value)
 
     const formSize = ref('default')
 const ruleForm = reactive({
@@ -296,10 +313,10 @@ const rules = reactive({
 
     // 搜索功能
     function handleSearch(queryString) {
-      tableData.value = []
+      miniTable.value = []
       allMsg.value.map(item => {
         if(item.name.indexOf(queryString) !== -1 && item.id.toString().indexOf(query.id) !== -1){
-          tableData.value.push(item)
+          miniTable.value.push(item)
         }
       })
     }
@@ -378,9 +395,11 @@ const rules = reactive({
         status: ruleForm.status,
       }]
       tableData.value = newItem.concat(tableData.value)
+      allMsg.value = newItem.concat(allMsg.value)
       ruleForms.value.validate((valid) => {
         if (valid) {
           addVisible.value = false
+          query.pageTotal = tableData.value.length
           clear(ruleForm)
           postNewUser(newItem).then(res => {  
             console.log(res)
@@ -407,7 +426,7 @@ const rules = reactive({
       editVisible.value = false
       ElMessage.success(`修改第 ${idx + 1} 行成功！`)
       Object.keys(form).forEach((item) => {
-        tableData.value[idx][item] = form[item]
+        miniTable.value[idx][item] = form[item]
       })
     }
 
@@ -425,14 +444,23 @@ const rules = reactive({
         .catch(() => {})
     }
 
+    const togglePagination = (page) => {
+      query.pageIndex = page
+      let beginNum = (page - 1) * query.pageSize
+      let endNum = query.pageSize * page > query.pageTotal ? query.pageTotal : query.pageSize * page
+      for (beginNum; beginNum < endNum; beginNum++) {
+        miniTable.value.push(tableData.value[beginNum])
+      }
+    }
+
 
    
    
-console.log(ruleForm);
+// console.log(ruleForm);
     return {
       query,
       tableData,
-      pageTotal,
+      miniTable,
       editVisible,
       addVisible,
       rules,
@@ -444,7 +472,8 @@ console.log(ruleForm);
       handleEdit,
       saveEdit,
       saveNewForm,
-      handleSearch
+      handleSearch,
+      togglePagination
     };
   },
 };
@@ -469,9 +498,9 @@ console.log(ruleForm);
 }
 .table {
   width: 100%;
-  height: 600px;
+  height: 700px;
   font-size: 14px;
-  overflow: scroll;
+  /* overflow: scroll; */
 }
 .red {
   color: #ff0000;
