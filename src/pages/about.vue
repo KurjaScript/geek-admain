@@ -316,7 +316,9 @@ const rules = reactive({
         minute = 0
         second = 0
       }else {
-        month = value1.getMonth() + 1
+        value1 = new Date(val1)
+        value2 = new Date(val2)
+        month = value1.getDay() + 1
         day = value1.getDay()
         hour = value2.getHours()
         minute = value2.getMinutes()
