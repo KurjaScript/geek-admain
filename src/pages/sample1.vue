@@ -175,7 +175,7 @@
         <span class="dialog-footer" >
           <el-button @click="addVisible = false">取消</el-button>
           <el-button v-if="titleValue === false" type="primary" @click="saveNewForm">确定</el-button>
-          <el-button v-else type="primary" @click="saveEdit()" >确 定吗？</el-button>
+          <el-button v-else type="primary" @click="saveEdit()" >确 定？</el-button>
         </span>
       </template>
 
@@ -331,7 +331,7 @@ const rules = reactive({
 
     // 转换日期格式
     const formatDate = (val1, val2) => {
-      debugger
+      // debugger
       console.log(val1,val2)
       let seperator1 = "-"
       let seperator2 = ":"
@@ -482,14 +482,22 @@ const rules = reactive({
         type: "warning"
       })
         .then(() => {
-          ElMessage.success("删除成功！")
           tableData.value.splice(index, 1)
+          query.pageTotal = tableData.value.length
+          if (query.pageSize > tableData.value.length) miniTable.value = tableData.value
+          else {
+            miniTable.value = []
+            for( let i = 1; i < tableData.value.length; i++){
+              miniTable.value.push(tableData.value[beginNum])
+            }
+          }
+          ElMessage.success("删除成功！")
         })
         .catch(() => {})
     }
 
     const togglePagination = (page) => {
-      debugger
+      // debugger
       // getUsersList()
       query.pageIndex = page
       let beginNum = (page - 1) * query.pageSize
