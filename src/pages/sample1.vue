@@ -412,7 +412,7 @@ const rules = reactive({
           addVisible.value = false
           query.pageTotal = tableData.value.length
           miniTable.value = tableData.value.slice((query.pageIndex - 1) * query.pageSize, query.pageIndex * query.pageSize) 
-          postNewUser(newItem).then(res => {  
+          postNewUser(newItem[0]).then(res => {  
             console.log(res)
           })
         }else {

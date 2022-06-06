@@ -14,10 +14,11 @@ export function postNewUser(params) {
         method: 'POST',
         url: '/users',
         // params
-        params: {
-            name: "zhang",
-            email: "foo@bar.com"
-        }
+        // params: {
+        //     name: "zhang",
+        //     email: "foo@bar.com"
+        // }
+        data: params
     })
 }
 
