@@ -231,10 +231,11 @@ export default {
     const getData = () => {
       getUsersList({}).then((res) => {
         allMsg.value = res.data.data
+        // console.log(allMsg)
         tableData.value = res.data.data;
-        allMsg.value.create_time = formatDate(allMsg.value.create_time)
-        tableData.value.create_time = formatDate(tableData.value.create_time)
-        console.log(res.data)
+        // allMsg.value.create_time = formatDate(null, allMsg.value.create_time)
+        // tableData.value.create_time = formatDate(null, tableData.value.create_time)
+        // console.log(res.data)
         query.pageTotal = tableData.value.length
         // query.pageTotal = res.data.meta.total
         
@@ -330,7 +331,8 @@ const rules = reactive({
 
     // 转换日期格式
     const formatDate = (val1, val2) => {
-      // debugger
+      debugger
+      console.log(val1,val2)
       let seperator1 = "-"
       let seperator2 = ":"
       
@@ -358,7 +360,7 @@ const rules = reactive({
         value1 = new Date(val1)
         value2 = new Date(val2)
         month = value1.getMonth() + 1
-        day = value1.getDay()
+        day = value1.getDate()
         hour = value2.getHours()
         minute = value2.getMinutes()
         second = value2.getSeconds()
@@ -445,8 +447,8 @@ const rules = reactive({
         ruleForm[key] = miniTable.value[idx][key]
       })
 
-      Object.keys(form).forEach(key => {
-        form[key] = row[key]
+      Object.keys(ruleForm).forEach(key => {
+        ruleForm[key] = row[key]
       })
       console.log(ruleForm)
       addVisible.value = true
@@ -458,9 +460,14 @@ const rules = reactive({
       // idx = index
       addVisible.value = false
       ElMessage.success(`修改第 ${idx + 1} 行成功！`)
-      Object.keys(form).forEach((item) => {
+      Object.keys(ruleForm).forEach((item) => {
         miniTable.value[idx][item] = ruleForm[item]
       })
+      console.log(ruleForm.create_date)
+      miniTable.value[idx].create_time = formatDate(ruleForm.create_date, ruleForm.create_time)
+      miniTable.value[idx]['update_time'] = formatDate(ruleForm['update_date'],ruleForm['update_time'])
+      // console.log(miniTable.value[idx]['create_time'])
+      // console.log(miniTable.value[idx]['update_time'])
       console.log(ruleForm)
       console.log(miniTable.value)
 
