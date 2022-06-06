@@ -171,13 +171,14 @@
           <el-switch v-model="ruleForm.status" />
         </el-form-item> 
       </el-form>
-      
-      <template #footer>
-        <span class="dialog-footer">
+      <template #footer >
+        <span class="dialog-footer" >
           <el-button @click="addVisible = false">取消</el-button>
-          <el-button type="primary" @click="saveNewForm">确定</el-button>
+          <el-button v-if="titleValue === false" type="primary" @click="saveNewForm">确定</el-button>
+          <el-button v-else type="primary" @click="saveEdit()" >确 定吗？</el-button>
         </span>
       </template>
+
     </el-dialog>
   </div>
 </template>
@@ -218,13 +219,14 @@ export default {
       status: false,
     })
   
-    const newForm = reactive({
-      name: "",
-      email: "",
-      create_time: "",
-      update_time: "",
-      status: "",
-    })
+    // const newForm = reactive({
+    //   name: "",
+    //   email: "",
+    //   create_time: "",
+    //   update_time: "",
+    //   status: "",
+    // })
+
     // 获取表格数据
     const getData = () => {
       getUsersList({}).then((res) => {
@@ -234,6 +236,7 @@ export default {
         tableData.value.create_time = formatDate(tableData.value.create_time)
         console.log(res.data)
         query.pageTotal = tableData.value.length
+        // query.pageTotal = res.data.meta.total
         
         if(query.pageSize > tableData.value.length) {
           miniTable.value = tableData.value
@@ -433,26 +436,35 @@ const rules = reactive({
     // 编辑操作
     let idx = -1
     const handleEdit = (index, row) => {
+      console.log(row)
       idx = index
       titleValue.value = true
-      addVisible.value = true
+     
+      // 点击编辑按钮，弹框里的内容保持一致
       Object.keys(ruleForm).map(key => {
         ruleForm[key] = miniTable.value[idx][key]
       })
 
-      Object.keys(miniTable).forEach(key => {
-        miniTable.value[idx][key] = row[key]
+      Object.keys(form).forEach(key => {
+        form[key] = row[key]
       })
-      
-      
+      console.log(ruleForm)
+      addVisible.value = true
     }
 
     const saveEdit = () => {
+      // console.log(miniTable.value[index])
+      // console.log(row)
+      // idx = index
       addVisible.value = false
       ElMessage.success(`修改第 ${idx + 1} 行成功！`)
       Object.keys(form).forEach((item) => {
-        miniTable.value[idx][item] = form[item]
+        miniTable.value[idx][item] = ruleForm[item]
       })
+      console.log(ruleForm)
+      console.log(miniTable.value)
+
+      // miniTable.value.splice[1]
     }
 
 
@@ -470,11 +482,13 @@ const rules = reactive({
     }
 
     const togglePagination = (page) => {
-      // debugger
+      debugger
+      // getUsersList()
       query.pageIndex = page
       let beginNum = (page - 1) * query.pageSize
       let endNum = query.pageSize * page > query.pageTotal ? query.pageTotal : query.pageSize * page
       miniTable.value = []
+
       for (beginNum; beginNum < endNum; beginNum++) {
         miniTable.value.push(tableData.value[beginNum])
       }
@@ -489,7 +503,6 @@ const rules = reactive({
       rules,
       ruleForm,
       ruleForms,
-      newForm,
       addForm,
       handleDelete,
       handleEdit,
@@ -521,7 +534,7 @@ const rules = reactive({
 }
 .table {
   width: 100%;
-  height: 750px;
+  height: 770px;
   font-size: 14px;
   /* overflow: scroll; */
 }
