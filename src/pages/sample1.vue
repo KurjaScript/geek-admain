@@ -400,7 +400,7 @@ const rules = reactive({
     }
 
     // 保存新增内容
-    const saveNewForm = (formName) => {
+    const saveNewForm = () => {
       // debugger
       let newItem = [{
         id: tableData.value.length + 1,
@@ -421,7 +421,7 @@ const rules = reactive({
             console.log(res)
           })
         }else {
-          clear(ruleForm)
+          // clear(ruleForm)
           console.log('error submit!!');
           return false;
         }
