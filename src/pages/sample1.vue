@@ -173,9 +173,10 @@
       </el-form>
       <template #footer >
         <span class="dialog-footer" >
-          <el-button @click="addVisible = false">取消</el-button>
+          <el-button v-if="titleValue === false" @click="cancelAdd">取消</el-button>
+          <el-button v-if="titleValue === true" @click="addVisible = false">取消</el-button>
           <el-button v-if="titleValue === false" type="primary" @click="saveNewForm">确定</el-button>
-          <el-button v-else type="primary" @click="saveEdit()" >确 定？</el-button>
+          <el-button v-if="titleValue === true" type="primary" @click="saveEdit()" >确 定？</el-button>
         </span>
       </template>
 
@@ -399,6 +400,14 @@ const rules = reactive({
       clear(ruleForm)
     }
 
+    // 取消新增
+    const cancelAdd = () => {
+      addVisible.value = false
+      // clear(ruleForm)
+      // ruleForms.value.validate()
+      ruleForms.value.resetFields()
+    }
+
     // 保存新增内容
     const saveNewForm = () => {
       // debugger
@@ -521,6 +530,7 @@ const rules = reactive({
       addForm,
       handleDelete,
       handleEdit,
+      cancelAdd,
       saveEdit,
       saveNewForm,
       handleSearch,
