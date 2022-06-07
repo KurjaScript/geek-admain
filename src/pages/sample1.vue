@@ -174,7 +174,7 @@
       <template #footer >
         <span class="dialog-footer" >
           <el-button v-if="titleValue === false" @click="cancelAdd">取消</el-button>
-          <el-button v-if="titleValue === true" @click="addVisible = false">取消</el-button>
+          <el-button v-if="titleValue === true" @click="addVisible = false">取消 ?</el-button>
           <el-button v-if="titleValue === false" type="primary" @click="saveNewForm">确定</el-button>
           <el-button v-if="titleValue === true" type="primary" @click="saveEdit()" >确 定？</el-button>
         </span>
@@ -429,6 +429,7 @@ const rules = reactive({
           postNewUser(newItem[0]).then(res => {  
             console.log(res)
           })
+          ruleForms.value.resetFields()
         }else {
           // clear(ruleForm)
           console.log('error submit!!');
