@@ -174,7 +174,7 @@
       <template #footer >
         <span class="dialog-footer" >
           <el-button v-if="titleValue === false" @click="cancelAdd">取消</el-button>
-          <el-button v-if="titleValue === true" @click="addVisible = false">取消 ?</el-button>
+          <el-button v-if="titleValue === true" @click="cancelEdit">取消 ?</el-button>
           <el-button v-if="titleValue === false" type="primary" @click="saveNewForm">确定</el-button>
           <el-button v-if="titleValue === true" type="primary" @click="saveEdit()" >确 定？</el-button>
         </span>
@@ -445,6 +445,17 @@ const rules = reactive({
     //   })
     // } 
 
+    // 取消编辑
+    const cancelEdit = () => {
+      addVisible.value = false
+      console.log(form)
+      ruleForms.value.resetFields()
+      Object.keys(form).forEach((key) => {
+        miniTable.value[idx][key] = form[key]
+      })
+      console.log(miniTable.value[idx])
+    }
+
     // 编辑操作
     let idx = -1
     const handleEdit = (index, row) => {
@@ -453,29 +464,42 @@ const rules = reactive({
       titleValue.value = true
      
       // 点击编辑按钮，弹框里的内容保持一致
-      Object.keys(ruleForm).map(key => {
-        ruleForm[key] = miniTable.value[idx][key]
+      Object.keys(form).map(key => {
+        form[key] = miniTable.value[idx][key]
       })
 
       Object.keys(ruleForm).forEach(key => {
         ruleForm[key] = row[key]
       })
+      
       console.log(ruleForm)
       addVisible.value = true
     }
-
+    // 保存编辑
     const saveEdit = () => {
       // console.log(miniTable.value[index])
       // console.log(row)
       // idx = index
-      addVisible.value = false
-      ElMessage.success(`修改第 ${idx + 1} 行成功！`)
-      Object.keys(ruleForm).forEach((item) => {
-        miniTable.value[idx][item] = ruleForm[item]
+     
+      ruleForms.value.validate((valid) => {
+        if(valid) {
+           addVisible.value = false
+           Object.keys(ruleForm).forEach((item) => {
+             miniTable.value[idx][item] = ruleForm[item]
+           })
+           miniTable.value[idx].create_time = formatDate(ruleForm.create_date, ruleForm.create_time)
+           miniTable.value[idx]['update_time'] = formatDate(ruleForm['update_date'],ruleForm['update_time'])
+           ElMessage.success(`修改第 ${idx + 1} 行成功！`)
+        } else {
+          console.log('error edit!')
+
+          return false
+        }
       })
+      
+      
       console.log(ruleForm.create_date)
-      miniTable.value[idx].create_time = formatDate(ruleForm.create_date, ruleForm.create_time)
-      miniTable.value[idx]['update_time'] = formatDate(ruleForm['update_date'],ruleForm['update_time'])
+      
       // console.log(miniTable.value[idx]['create_time'])
       // console.log(miniTable.value[idx]['update_time'])
       console.log(ruleForm)
@@ -532,6 +556,7 @@ const rules = reactive({
       handleDelete,
       handleEdit,
       cancelAdd,
+      cancelEdit,
       saveEdit,
       saveNewForm,
       handleSearch,
