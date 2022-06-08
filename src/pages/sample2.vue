@@ -28,7 +28,6 @@
           >
       </div>
       
-      
 
       <el-table
         :data="miniTable"
@@ -132,7 +131,7 @@
             <el-input style="width:150px" v-model="ruleForm.email" />
           </el-col>
         </el-form-item>
-        <el-form-item label="创建时间">
+        <!-- <el-form-item label="创建时间">
           <el-col :span="11" >
             <el-form-item prop="create_date">
               <el-date-picker
@@ -149,8 +148,8 @@
               <el-time-picker placeholder="选择时间" v-model="ruleForm.create_time" style="width: 100%;"></el-time-picker>
             </el-form-item>
           </el-col>
-        </el-form-item>
-        <el-form-item label="更新时间" >
+        </el-form-item> -->
+        <!-- <el-form-item label="更新时间" >
           <el-col :span="11">
             <el-form-item prop="update_date">
               <el-date-picker
@@ -167,32 +166,29 @@
               <el-time-picker placeholder="选择时间" v-model="ruleForm.update_time" style="width: 100%;"></el-time-picker>
             </el-form-item>
           </el-col>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="状态" prop="status">
           <el-switch v-model="ruleForm.status" />
         </el-form-item> 
       </el-form>
-      <template #footer >
-        <span class="dialog-footer" >
-          <el-button v-if="titleValue === false" @click="cancelAdd">取消</el-button>
-          <el-button v-if="titleValue === true" @click="cancelEdit">取消 ?</el-button>
-          <el-button v-if="titleValue === false" type="primary" @click="saveNewForm">确定</el-button>
-          <el-button v-if="titleValue === true" type="primary" @click="saveEdit()" >确 定？</el-button>
+      
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="addVisible = false">取消</el-button>
+          <el-button type="primary" @click="saveNewForm">确定</el-button>
         </span>
       </template>
-      <!-- <span>{{JSON.stringify(ruleForm)}}</span> -->
-
     </el-dialog>
   </div>
 </template>
 <script>
-import { ref, reactive, computed, toRefs } from "vue";
+import { ref, reactive } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { getUsersList, postNewUser } from '../api/restful';
 
 
 // import { fetchData } from "../api/data";
-// import { getBasetable, postBasetable } from "../mock/basetable.js"
+// import { getBasetable, postBasetablupdate_timee } from "../mock/basetable.js"
 // import axios from 'axios';
 
 export default {
@@ -221,14 +217,24 @@ export default {
       update_time: '',
       status: false,
     })
-
+  
+    const newForm = reactive({
+      name: "",
+      email: "",
+      create_time: "",
+      update_time: "",
+      status: "",
+    })
     // 获取表格数据
     const getData = () => {
       getUsersList({}).then((res) => {
         allMsg.value = res.data.data
-        console.log(allMsg)
         tableData.value = res.data.data;
+        allMsg.value.create_time = formatDate(allMsg.value.create_time)
+        tableData.value.create_time = formatDate(tableData.value.create_time)
+        console.log(res.data)
         query.pageTotal = tableData.value.length
+        
         if(query.pageSize > tableData.value.length) {
           miniTable.value = tableData.value
         } else {
@@ -246,19 +252,14 @@ export default {
 
     const formSize = ref('default')
 const ruleForm = reactive({
-  
-    name: '',
-    email: '',
-    create_date: 'Wed Jun 08 2022 23:25:59 GMT+0800',
-    create_time: '',
-    update_date: '',
-    update_time: '',
-    status: false,
-  
-  
+  name: '',
+  email: '',
+  create_date: '',
+  create_time: '',
+  update_date: '',
+  update_time: '',
+  status: false,
 })
-
-
 
 const rules = reactive({
   name: [
@@ -327,7 +328,6 @@ const rules = reactive({
     // 转换日期格式
     const formatDate = (val1, val2) => {
       // debugger
-      console.log(val1,val2)
       let seperator1 = "-"
       let seperator2 = ":"
       
@@ -355,7 +355,7 @@ const rules = reactive({
         value1 = new Date(val1)
         value2 = new Date(val2)
         month = value1.getMonth() + 1
-        day = value1.getDate()
+        day = value1.getDay()
         hour = value2.getHours()
         minute = value2.getMinutes()
         second = value2.getSeconds()
@@ -392,19 +392,10 @@ const rules = reactive({
       titleValue.value = false
       addVisible.value = true
       clear(ruleForm)
-      console.log(ruleForm)
-    }
-
-    // 取消新增
-    const cancelAdd = () => {
-      addVisible.value = false
-      // clear(ruleForm)
-      // ruleForms.value.validate()
-      ruleForms.value.resetFields()
     }
 
     // 保存新增内容
-    const saveNewForm = () => {
+    const saveNewForm = (formName) => {
       // debugger
       let newItem = [{
         id: tableData.value.length + 1,
@@ -421,79 +412,47 @@ const rules = reactive({
           addVisible.value = false
           query.pageTotal = tableData.value.length
           miniTable.value = tableData.value.slice((query.pageIndex - 1) * query.pageSize, query.pageIndex * query.pageSize) 
-          postNewUser(newItem[0]).then(res => {  
+          postNewUser(newItem).then(res => {  
             console.log(res)
           })
-          ruleForms.value.resetFields()
         }else {
-          // clear(ruleForm)
+          clear(ruleForm)
           console.log('error submit!!');
           return false;
         }
       })
     }
 
-    // 取消编辑
-    const cancelEdit = () => {
-      addVisible.value = false
-      console.log(form)
-      ruleForms.value.resetFields()
-      Object.keys(form).forEach((key) => {
-        miniTable.value[idx][key] = form[key]
-      })
-      console.log(miniTable.value[idx])
-    }
-
-    const transformTime = str => {
-      // debugger
-      let string1 = new Date(str.replace("T", " ").replace("Z",""))
-      console.log("aaa---",string1)
-      return string1
-    }
+    // 恢复 reactive 对象
+    // const recover = (obj) => {
+    //   Object().keys().map(key => {
+    //     obj[key] = 
+    //   })
+    // } 
 
     // 编辑操作
     let idx = -1
     const handleEdit = (index, row) => {
-      console.log(row)
       idx = index
       titleValue.value = true
-      // 点击编辑按钮，弹框里的内容保持一致
-      Object.keys(ruleForm).map(key => {
-        if (key === "create_date") ruleForm[key] = transformTime(row["create_time"])
-        else if (key === "create_time") ruleForm[key] = transformTime(row["create_time"])
-        else if (key === "update_date") ruleForm[key] = transformTime(row["update_time"])
-        else if ( key === "update_time") ruleForm[key] = transformTime(row["update_time"])
-        else ruleForm[key] = row[key]
-        console.log(ruleForm[key])
-      })
-      console.log("aaa4 ",ruleForm)
-
-      Object.keys(form).map(key => {
-        form[key] = row[key]
-      })
-      console.log(miniTable.value[idx])
-
       addVisible.value = true
-    }
-    // 保存编辑
-    const saveEdit = () => {
-      ruleForms.value.validate((valid) => {
-        if(valid) {
-          let id = ref(miniTable.value[idx]['id'])
-           console.log(id)
-           Object.keys(miniTable.value[idx]).map((item) => {
-             miniTable.value[idx][item] = ruleForm[item]
-           })
-           miniTable.value[idx]['id'] = id.value
-           miniTable.value[idx].create_time = formatDate(ruleForm.create_date, ruleForm.create_time)
-           miniTable.value[idx]['update_time'] = formatDate(ruleForm['update_date'],ruleForm['update_time'])
-           ElMessage.success(`修改第 ${idx + 1} 行成功！`)
-           addVisible.value = false
-        } else {
-          console.log('error edit!')
+      Object.keys(ruleForm).map(key => {
+        ruleForm[key] = miniTable.value[idx][key]
+      })
+      console.log(ruleForm)
 
-          return false
-        }
+      Object.keys(miniTable).forEach(key => {
+        miniTable.value[idx][key] = row[key]
+      })
+      
+      
+    }
+
+    const saveEdit = () => {
+      addVisible.value = false
+      ElMessage.success(`修改第 ${idx + 1} 行成功！`)
+      Object.keys(form).forEach((item) => {
+        miniTable.value[idx][item] = form[item]
       })
     }
 
@@ -505,26 +464,18 @@ const rules = reactive({
         type: "warning"
       })
         .then(() => {
-          tableData.value.splice(index, 1)
-          query.pageTotal = tableData.value.length
-          if (query.pageSize > tableData.value.length) miniTable.value = tableData.value
-          else {
-            miniTable.value = []
-            for( let i = 1; i < tableData.value.length; i++){
-              miniTable.value.push(tableData.value[i])
-            }
-          }
           ElMessage.success("删除成功！")
+          tableData.value.splice(index, 1)
         })
         .catch(() => {})
     }
 
     const togglePagination = (page) => {
+      // debugger
       query.pageIndex = page
       let beginNum = (page - 1) * query.pageSize
       let endNum = query.pageSize * page > query.pageTotal ? query.pageTotal : query.pageSize * page
       miniTable.value = []
-
       for (beginNum; beginNum < endNum; beginNum++) {
         miniTable.value.push(tableData.value[beginNum])
       }
@@ -539,11 +490,10 @@ const rules = reactive({
       rules,
       ruleForm,
       ruleForms,
+      newForm,
       addForm,
       handleDelete,
       handleEdit,
-      cancelAdd,
-      cancelEdit,
       saveEdit,
       saveNewForm,
       handleSearch,
@@ -572,7 +522,7 @@ const rules = reactive({
 }
 .table {
   width: 100%;
-  height: 770px;
+  height: 750px;
   font-size: 14px;
   /* overflow: scroll; */
 }

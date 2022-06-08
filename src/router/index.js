@@ -129,10 +129,21 @@ const routes = [
     path: '/manuscript',
     name: 'Manuscript',
     component: () => import ("../pages/manuscript.vue")
-  },{
+  },
+  {
     path: '/sample1',
     name: 'Sample1',
     component: () => import("../pages/sample1.vue")
+  },
+  {
+    path: '/sample2',
+    name: 'Sample2',
+    component: () => import("../pages/sample2.vue")
+  },
+  {
+    path: '/sample3',
+    name: 'Sample3',
+    component: () => import("../pages/sample3.vue")
   }
 ]
 
