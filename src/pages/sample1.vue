@@ -210,7 +210,7 @@ export default {
     });
     const ruleForms = ref(null)
     const tableData = ref([]);
-    const allMsg = ref([])
+    // const allMsg = ref([])
     const miniTable = ref([])
     const form = reactive({
       name: '',
@@ -225,8 +225,8 @@ export default {
     // 获取表格数据
     const getData = () => {
       getUsersList({}).then((res) => {
-        allMsg.value = res.data.data
-        console.log(allMsg)
+        // allMsg.value = res.data.data
+        // console.log(allMsg)
         tableData.value = res.data.data;
         query.pageTotal = tableData.value.length
         if(query.pageSize > tableData.value.length) {
@@ -317,7 +317,7 @@ const rules = reactive({
     // 搜索功能
     function handleSearch(queryString) {
       miniTable.value = []
-      allMsg.value.map(item => {
+      tableData.value.map(item => {
         if(item.name.indexOf(queryString) !== -1 && item.id.toString().indexOf(query.id) !== -1){
           miniTable.value.push(item)
         }
@@ -331,9 +331,10 @@ const rules = reactive({
       let seperator1 = "-"
       let seperator2 = ":"
       
-      let value1, value2, month, day, hour, minute, second
+      let value1, value2, month, day, hour, minute, second,formatDate
       if (!val1 && !val2) { 
-        return "暂无"
+        formatDate = ""
+        return formatDate
       }
       else if (!val1) {
         value1 = new Date(val2)
@@ -376,29 +377,33 @@ const rules = reactive({
       if (second >= 0 && second <= 9) {
         second = "0" + second
       }
-      let formatDate = value1.getFullYear() + seperator1 + month + seperator1 + day + " " + hour + seperator2 + minute + seperator2 + second;
+      formatDate = value1.getFullYear() + seperator1 + month + seperator1 + day + " " + hour + seperator2 + minute + seperator2 + second;
       return formatDate
     }
 
     // 清空 reactive 对象
     const clear = (obj) => {
       Object.keys(obj).map(key => {
-        obj[key] = null
+        if (key === "status") obj[key] = false
+        else obj[key] = ""
       })
     }
 
     // 点击新增按钮
     const addForm = () => {
+      // debugger
       titleValue.value = false
       addVisible.value = true
       clear(ruleForm)
+      console.log(ruleForm)
+      // ruleForms.value.resetFields()
       console.log(ruleForm)
     }
 
     // 取消新增
     const cancelAdd = () => {
       addVisible.value = false
-      // clear(ruleForm)
+      clear(ruleForm)
       // ruleForms.value.validate()
       ruleForms.value.resetFields()
     }
@@ -406,18 +411,20 @@ const rules = reactive({
     // 保存新增内容
     const saveNewForm = () => {
       // debugger
-      let newItem = [{
-        id: tableData.value.length + 1,
-        name: ruleForm.name,
-        email: ruleForm.email,
-        create_time: formatDate(ruleForm.create_date, ruleForm.create_time),
-        update_time: formatDate(ruleForm.update_date, ruleForm.update_time),
-        status: ruleForm.status,
-      }]
-      tableData.value = newItem.concat(tableData.value)
-      allMsg.value = newItem.concat(allMsg.value)
+      console.log(ruleForm.create_date)
+      let newItem = []
       ruleForms.value.validate((valid) => {
         if (valid) {
+          newItem = [{
+            id: tableData.value.length + 1,
+            name: ruleForm.name,
+            email: ruleForm.email,
+            create_time: formatDate(ruleForm.create_date, ruleForm.create_time),
+            update_time: formatDate(ruleForm.update_date, ruleForm.update_time),
+            status: ruleForm.status,
+          }]
+          tableData.value = newItem.concat(tableData.value)
+          // allMsg.value = newItem.concat(allMsg.value)
           addVisible.value = false
           query.pageTotal = tableData.value.length
           miniTable.value = tableData.value.slice((query.pageIndex - 1) * query.pageSize, query.pageIndex * query.pageSize) 
@@ -438,7 +445,7 @@ const rules = reactive({
       addVisible.value = false
       console.log(form)
       ruleForms.value.resetFields()
-      Object.keys(form).forEach((key) => {
+      Object.keys(form).map((key) => {
         miniTable.value[idx][key] = form[key]
       })
       console.log(miniTable.value[idx])
@@ -446,7 +453,9 @@ const rules = reactive({
 
     const transformTime = str => {
       // debugger
-      let string1 = new Date(str.replace("T", " ").replace("Z",""))
+      let string1 
+      if(!str) string1 = ""
+      else string1 = new Date(str.replace("T", " ").replace("Z",""))
       console.log("aaa---",string1)
       return string1
     }
@@ -459,7 +468,11 @@ const rules = reactive({
       titleValue.value = true
       // 点击编辑按钮，弹框里的内容保持一致
       Object.keys(ruleForm).map(key => {
-        if (key === "create_date") ruleForm[key] = transformTime(row["create_time"])
+        if (key === "create_date") {
+        
+          // if (ruleForm)
+          ruleForm[key] = transformTime(row["create_time"])
+        }
         else if (key === "create_time") ruleForm[key] = transformTime(row["create_time"])
         else if (key === "update_date") ruleForm[key] = transformTime(row["update_time"])
         else if ( key === "update_time") ruleForm[key] = transformTime(row["update_time"])
