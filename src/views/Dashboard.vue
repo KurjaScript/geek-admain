@@ -23,11 +23,10 @@
           </div>
         </el-card>
         <el-card shadow="hover" style="height: 252px">
-          <template #header >
-              <div style="height:40px; line-height:40px">
-                <span>语言详情</span>
-              </div>
-            
+          <template #header>
+            <div style="height: 40px; line-height: 40px">
+              <span>语言详情</span>
+            </div>
           </template>
           Vue
           <el-progress :percentage="71.3" color="#42b983"></el-progress>
@@ -75,17 +74,32 @@
             </el-card>
           </el-col>
         </el-row>
-        <el-card shadow="hover" style="height: 403px;">
-            <div style="display:flex;position:relative;align-items:center;height:30px;z-index:999">
-              <div class="clearfix">
-                <div style="height:40px;line-height:40px">待办事项</div>
-                <el-button style="float: right; padding: 3px" type="text" @click="addVisible = true"
-                  >添加</el-button
-                >
-              </div>
+        <el-card shadow="hover" style="height: 403px">
+          <div
+            style="
+              display: flex;
+              position: relative;
+              align-items: center;
+              height: 30px;
+              z-index: 999;
+            "
+          >
+            <div class="clearfix">
+              <div style="height: 40px; line-height: 40px">待办事项</div>
+              <el-button
+                style="float: right; padding: 3px"
+                type="text"
+                @click="addVisible = true"
+                >添加</el-button
+              >
             </div>
+          </div>
           <!-- show-header: 是否显示表头 -->
-          <el-table :show-header="false" :data="state.todoList" style="width: 100%;height:325px;overflow:scroll">
+          <el-table
+            :show-header="false"
+            :data="state.todoList"
+            style="width: 100%; height: 325px; overflow: scroll"
+          >
             <el-table-column width="40">
               <template #default="scope">
                 <!-- scope.row.status -->
@@ -106,8 +120,13 @@
             </el-table-column>
             <el-table-column width="90" align="center">
               <template #default="scope">
-                  <el-button type="text" icon="el-icon-delete" style="color:#ff0000"
-                      @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                <el-button
+                  type="text"
+                  icon="el-icon-delete"
+                  style="color: #ff0000"
+                  @click="handleDelete(scope.$index, scope.row)"
+                  >删除</el-button
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -148,79 +167,78 @@
         </span>
       </template>
     </el-dialog>
-
   </div>
 </template>
 
 <script>
 import Schart from "vue-schart";
-import { onMounted, reactive, computed, ref} from "vue";
+import { onMounted, reactive, computed, ref } from "vue";
 import { useStore } from "vuex";
-import { getDashboard } from '../mock/dashboard';
+import { getDashboard } from "../mock/dashboard";
 import axios from "axios";
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElMessage, ElMessageBox } from "element-plus";
 export default {
-  name: "dashboard",
+  name: "dashboard1",
   components: { Schart },
   setup() {
     const name = localStorage.getItem("ms_username");
     const role = name === "admin" ? "超级管理员" : "普通用户";
-    const store = useStore()
-    let addVisible = ref(false)
-    let addevent = ref("")
+    const store = useStore();
+    let addVisible = ref(false);
+    let addevent = ref("");
 
     const state = reactive({
       options1: {},
       options2: {},
-      todoList: []
-    })
-    const handleDelete = ((index, row) => {
-      ElMessageBox.confirm(
-        '确定删除？',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      ).then(() => {
-        state.todoList.splice(index,1)
-        ElMessage({
-          type: 'success',
-          message: `成功删除第${index+1}待做事项！`
-        })
-      }).catch(() => {
-        ElMessage({
-          type: 'info',
-          message: '取消删除'
-        })
+      todoList: [],
+    });
+    const handleDelete = (index, row) => {
+      ElMessageBox.confirm("确定删除？", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
-    })
+        .then(() => {
+          state.todoList.splice(index, 1);
+          ElMessage({
+            type: "success",
+            message: `成功删除第${index + 1}待做事项！`,
+          });
+        })
+        .catch(() => {
+          ElMessage({
+            type: "info",
+            message: "取消删除",
+          });
+        });
+    };
     const saveEvent = () => {
       if (addevent.value === "") {
-        ElMessage.error(`您的输入为空，请输入待做事项！`)
+        ElMessage.error(`您的输入为空，请输入待做事项！`);
       } else {
-        addVisible.value = false
-        let interEvent = addevent.value
-        state.todoList.push({index: state.todoList.length + 1, title: interEvent, status: false})
-        ElMessage.success(`已成功添加待做事项！`)
-        addevent.value = ""
-        console.log(state.todoList)
+        addVisible.value = false;
+        let interEvent = addevent.value;
+        state.todoList.push({
+          index: state.todoList.length + 1,
+          title: interEvent,
+          status: false,
+        });
+        ElMessage.success(`已成功添加待做事项！`);
+        addevent.value = "";
+        console.log(state.todoList);
       }
-    }
-   
-
+    };
 
     onMounted(() => {
-      getDashboard().then(res => {
-        const { code, data } = res.data
+      getDashboard().then((res) => {
+        const { code, data } = res.data;
         if (code === 200) {
-          state.todoList = data.todoList
-          state.options1 = data.options1
-          state.options2 = data.options2
+          state.todoList = data.todoList;
+          state.options1 = data.options1;
+          state.options2 = data.options2;
         }
-      })
-      
-    }) 
+      });
+    });
 
     return {
       name,
@@ -229,8 +247,7 @@ export default {
       state,
       role,
       saveEvent,
-      handleDelete
-
+      handleDelete,
     };
   },
 };
@@ -348,7 +365,7 @@ export default {
 .clearfix {
   display: flex;
   position: absolute;
-  width:100%;
+  width: 100%;
   justify-content: space-between;
   align-content: center;
   margin-top: -20px;
@@ -357,7 +374,7 @@ export default {
   /* z-index: 999; */
   /* color: red; */
 }
-/deep/ .el-card__header{
+/deep/ .el-card__header {
   padding: 0 20px;
 }
 </style>
